@@ -28,7 +28,7 @@ Want more? Just drop a custom module into `handlers/`.
 Post-processing extras you can toggle in the UI:
 
 - ✅ **SHA256 Hashes** — `.sha256.txt` verification file  
-- ✅ **GPG Encryption** — use your own public key to lock it down
+- ✅ **GPG Encryption** — encrypt files using your own public key (must be uploaded)
 ## ✨ Features At-A-Glance
 
 - 🧼 Local-first processing  
