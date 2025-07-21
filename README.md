@@ -1,137 +1,112 @@
-MetaScrub
+# 🧼 MetaScrub
 
-MetaScrub is a local-first, extensible metadata scrubber designed to prioritize privacy. It runs entirely on your machine — no cloud, no telemetry, no tracking.
+**MetaScrub** is your local-first tool for cleaning metadata from sensitive files—no cloud, no tracking, no leaks. Run it entirely on your machine and take full control over digital hygiene.
 
-📁 Upload files through a simple drag-and-drop interface and get cleaned versions with sensitive metadata removed. Optionally apply hashing or GPG encryption before download.
-🔍 Purpose
+📁 Just drag and drop files into the browser to get scrubbed versions back. Optionally add hashing or GPG encryption on your terms.
+## 🔍 Who’s It For?
 
-MetaScrub is built for:
+MetaScrub is made for:
 
-  -Journalists and whistleblowers
+- 🕵️ Journalists and whistleblowers  
+- 🔐 Privacy advocates  
+- 🛡️ Security professionals  
+- 👤 Anyone who wants true digital autonomy
 
-  -Privacy advocates
+It’s modular, extensible, and easy to tailor via its handler-based architecture.
+## ✅ What File Types Are Supported?
 
-  -Security professionals
+Out of the box:
 
-  -Anyone who wants total control over file sanitation
+- **JPEG** — EXIF wiped via Pillow  
+- **PDF** — Metadata scrubbed via PyMuPDF  
+- **DOCX** — Author/history removed via python-docx  
+- **XLSX** — Cleanup via openpyxl
 
-The architecture is modular, allowing easy extension through file-type-specific "handlers" and optional "postprocessors."
-✅ Supported File Types
+Want more? Just drop a custom module into `handlers/`.
+## 🔐 Optional Add-ons
 
-Built-in handlers currently support:
+Post-processing extras you can toggle in the UI:
 
-  -JPEG — strips EXIF metadata via Pillow
+- ✅ **SHA256 Hashes** — `.sha256.txt` verification file  
+- ✅ **GPG Encryption** — use your own public key to lock it down
+## ✨ Features At-A-Glance
 
-  -PDF — removes embedded metadata using PyMuPDF
-
-  -DOCX — clears author/history via python-docx
-
-  -XLSX — strips metadata using openpyxl
-
-More formats can be added by dropping new handler modules into handlers/.
-🔐 Postprocessors (Optional)
-
-Postprocessors are applied after metadata has been stripped. Currently supported:
-
-  -✅ SHA256 hash generation — generates a .sha256.txt for verification
-
-  -✅ GPG encryption — encrypts cleaned files using a provided public key
-
-Toggle these options via checkboxes in the UI.
-✨ Features
-
-🧼 Local-first metadata scrubbing
-
-📂 Drag & drop browser interface
-
-🔌 Extensible: add handlers/postprocessors easily
-
-🔒 Optional GPG encryption and SHA256 hashing
-
-🧹 Temporary-only storage — nothing persisted
-
-🎨 Light/dark/system theme toggle
-
-🐳 Fully Dockerized for clean deployment
-
-🔧 Configurable port and settings via .env
-
-🚀 Quickstart
+- 🧼 Local-first processing  
+- 🖥️ Browser-based UI  
+- 🔌 Modular architecture (easy to extend)  
+- 🔒 Optional hashing + GPG encryption  
+- 🧹 Temporary-only storage—never saved  
+- 🎨 Light/dark/system theme toggle  
+- 🐳 Dockerized for clean deploy  
+- ⚙️ `.env` config for ports and tweaks
+## 🚀 Get Started
 
 Build and run with Docker:
 
+```bash
 docker build -t metascrub .
 docker run -p 8574:8574 metascrub
+```
 
-Or with Docker Compose:
+Or fire it up with Docker Compose:
 
+```bash
 docker-compose up --build
+```
 
-Then open your browser to:
+Open your browser to:
+
+```
 http://localhost:8574
-📁 Project Structure
+```
+## 📦 Project Structure
 
+```
 MetaScrub/
-├── app.py                # Main Flask application
-├── handlers/             # File-type-specific scrubbers (JPEG, PDF, DOCX, XLSX)
-├── postprocessors/       # Optional processors like hashing and encryption
-├── static/               # Styles, scripts, icons
-├── templates/            # Jinja2 HTML templates
-├── Dockerfile            # Build configuration
-├── docker-compose.yml    # Local dev orchestration
-├── .env                  # Environment config (e.g., port)
-├── requirements.txt      # Python dependencies
-└── README.md             # You're looking at it
+├── app.py              # Main Flask backend
+├── handlers/           # File scrubbers per format
+├── postprocessors/     # Hashing, encryption
+├── static/             # CSS & JS
+├── templates/          # Browser interface
+├── Dockerfile          # Build recipe
+├── docker-compose.yml  # Container orchestration
+├── .env                # Runtime config
+└── requirements.txt    # Python dependencies
+```
+## 🛡️ Privacy-First Philosophy
 
-🛡️ Privacy Principles
+- ✅ Nothing ever leaves your machine  
+- ✅ No analytics, no trackers  
+- ✅ Temp files wiped after download  
+- ✅ Encryption is optional and fully local
+## 📈 Roadmap
 
-❌ No file ever leaves your machine
+Coming soon:
 
-❌ No third-party analytics
+- [ ] PNG, video, and audio support  
+- [ ] Smarter GPG key validation  
+- [ ] One-click file wiping  
+- [ ] Batch downloads  
+- [ ] Scrubbing presets (light, aggressive, etc.)
+## 📋 Dependencies
 
-✅ Temporary files are wiped immediately after download
+Docker image bundles:
 
-✅ Encryption is optional and fully under user control
+- Python 3.9+  
+- Flask  
+- Pillow  
+- PyMuPDF (fitz)  
+- python-docx  
+- openpyxl  
+- Optional: `gpg` installed for encryption
+## 📝 License
 
-🛠️ Roadmap
+MIT—fork it, remix it, ship it. Just give credit.
+## 🤝 Contributions
 
-  -Add support for PNG, video, and audio files
+PRs, issues, suggestions—all welcome.
 
-  -More robust GPG key validation
+Have an idea for a new handler or feature? Drop a line or send a pull request.
+## 💬 Maintainer
 
-  -One-click secure wiping
-
-  -Batch download support
-
-  -Configurable scrubbing presets
-
-📦 Dependencies
-
-Included automatically in Docker builds:
-
-  -Python 3.9+
-
-  -Flask
-
-  -Pillow
-
-  -PyMuPDF (fitz)
-
-  -python-docx
-
-  -openpyxl
-
-Optional: gpg installed on host for encryption support
-
-📝 License
-
-Licensed under the MIT License.
-🤝 Contributions
-
-PRs and issues welcome.
-
-If you have ideas for new handlers, postprocessors, or features, feel free to open an issue or submit a PR.
-💬 Contact
-
-Maintained by KitQuietDev
-GitHub: https://github.com/KitQuietDev
+Created by [KitQuietDev](https://github.com/KitQuietDev)
