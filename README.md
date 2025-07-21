@@ -29,6 +29,20 @@ Post-processing extras you can toggle in the UI:
 
 - ✅ **SHA256 Hashes** — `.sha256.txt` verification file  
 - ✅ **GPG Encryption** — encrypt files using your own public key (must be uploaded)
+## 🧩 Extending MetaScrub
+
+Want to add support for more file types (e.g., PNG, MP4, SVG)?
+
+1. Create a new module in `handlers/` following the examples inside.
+2. Register it in `app.py` by importing it and adding to the supported types.
+3. Rebuild the Docker container so the changes apply:
+
+```bash
+docker-compose build
+docker-compose up
+```
+🛠️ You must rebuild the container (with ```docker-compose up --build```)any time you change backend Python code or add files (like handlers or postprocessors).
+Changes to **.html, .js, or .css** files **do not** require a rebuild — just refresh your browser.
 ## ✨ Features At-A-Glance
 
 - 🧼 Local-first processing  
