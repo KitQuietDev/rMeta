@@ -102,7 +102,8 @@ These are bundled automatically when using Docker.
 
 ## 📝 License
 
-_Add a license here (MIT, GPL-3.0, or Apache-2.0 recommended)_
+This project is licensed under the MIT License.
+You are free to use, modify, and distribute this software with proper attribution.
 
 ---
 
