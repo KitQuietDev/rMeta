@@ -35,7 +35,7 @@ Post-processing extras you can toggle in the UI:
 - 🖥️ Browser-based UI  
 - 🔌 Modular architecture (easy to extend)  
 - 🔒 Optional hashing + GPG encryption  
-- 🧹 Temporary-only storage—never saved  
+- 🧹 Temporary files are deleted after download  
 - 🎨 Light/dark/system theme toggle  
 - 🐳 Dockerized for clean deploy  
 - ⚙️ `.env` config for ports and tweaks
