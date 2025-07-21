@@ -1,118 +1,137 @@
-# MetaScrub
+MetaScrub
 
-**MetaScrub** is a local-first metadata scrubber for images, PDFs, and DOCX files.
+MetaScrub is a local-first, extensible metadata scrubber designed to prioritize privacy. It runs entirely on your machine — no cloud, no telemetry, no tracking.
 
-📁 **Drag & drop** your files in the browser, and receive cleaned versions with privacy-sensitive metadata removed — no cloud, no tracking.
+📁 Upload files through a simple drag-and-drop interface and get cleaned versions with sensitive metadata removed. Optionally apply hashing or GPG encryption before download.
+🔍 Purpose
 
----
+MetaScrub is built for:
 
-## ✨ Features
+    Journalists and whistleblowers
 
-- 🖼️ Removes EXIF metadata from JPEG images
-- 📄 Clears PDF document metadata
-- 📝 Creates clean DOCX files without embedded author or edit history
-- 🔐 Optional SHA256 hash generation and GPG encryption
-- 🖥️ Simple browser-based UI
-- 🐳 Dockerized for easy setup
-- 🧹 Temporary files only — nothing is stored after download
-- ⚙️ Runs locally on port `8574` (configurable via `.env`)
+    Privacy advocates
 
----
+    Security professionals
 
-## 🚀 Quickstart
+    Anyone who wants total control over file sanitation
 
-Build and run via Docker:
+The architecture is modular, allowing easy extension through file-type-specific "handlers" and optional "postprocessors."
+✅ Supported File Types
 
-```bash
+Built-in handlers currently support:
+
+    JPEG — strips EXIF metadata via Pillow
+
+    PDF — removes embedded metadata using PyMuPDF
+
+    DOCX — clears author/history via python-docx
+
+    XLSX — strips metadata using openpyxl
+
+More formats can be added by dropping new handler modules into handlers/.
+🔐 Postprocessors (Optional)
+
+Postprocessors are applied after metadata has been stripped. Currently supported:
+
+    ✅ SHA256 hash generation — generates a .sha256.txt for verification
+
+    ✅ GPG encryption — encrypts cleaned files using a provided public key
+
+Toggle these options via checkboxes in the UI.
+✨ Features
+
+    🧼 Local-first metadata scrubbing
+
+    📂 Drag & drop browser interface
+
+    🔌 Extensible: add handlers/postprocessors easily
+
+    🔒 Optional GPG encryption and SHA256 hashing
+
+    🧹 Temporary-only storage — nothing persisted
+
+    🎨 Light/dark/system theme toggle
+
+    🐳 Fully Dockerized for clean deployment
+
+    🔧 Configurable port and settings via .env
+
+🚀 Quickstart
+
+Build and run with Docker:
+
 docker build -t metascrub .
 docker run -p 8574:8574 metascrub
-```
+
+Or with Docker Compose:
+
+docker-compose up --build
 
 Then open your browser to:
-
-```
 http://localhost:8574
-```
+📁 Project Structure
 
-Or, with Docker Compose:
-
-```bash
-docker-compose up --build
-```
-
----
-
-## 📁 Project Structure
-
-```
 MetaScrub/
-├── app.py                # Main Flask app
-├── handlers/             # File-type-specific cleaners
-├── postprocessors/       # Optional hashing and GPG encryption
-├── static/               # CSS, JS, favicon, etc.
-├── templates/            # HTML templates (Jinja2)
-├── Dockerfile            # Base image and build steps
-├── docker-compose.yml    # Local orchestration
-├── .env                  # Environment config (port, etc.)
+├── app.py                # Main Flask application
+├── handlers/             # File-type-specific scrubbers (JPEG, PDF, DOCX, XLSX)
+├── postprocessors/       # Optional processors like hashing and encryption
+├── static/               # Styles, scripts, icons
+├── templates/            # Jinja2 HTML templates
+├── Dockerfile            # Build configuration
+├── docker-compose.yml    # Local dev orchestration
+├── .env                  # Environment config (e.g., port)
 ├── requirements.txt      # Python dependencies
-└── README.md             # This file
-```
+└── README.md             # You're looking at it
 
----
+🛡️ Privacy Principles
 
-## 🛡️ Privacy Notes
+    ❌ No file ever leaves your machine
 
-MetaScrub is designed for **maximum local privacy**:
+    ❌ No third-party analytics
 
-- ✅ No file ever leaves your machine  
-- ✅ No third-party analytics, logging, or telemetry  
-- ✅ Temporary files are deleted after each download  
+    ✅ Temporary files are wiped immediately after download
 
-You control everything — even encryption can be added on your terms.
+    ✅ Encryption is optional and fully under user control
 
----
+🛠️ Roadmap
 
-## 🔧 Configuration
+Add support for PNG, video, and audio files
 
-You can modify `.env` to set the listening port and other options.
+More robust GPG key validation
 
----
+One-click secure wiping
 
-## 📦 Dependencies
+Batch download support
 
-- Python 3.9+
-- Flask
-- Pillow (for JPEGs)
-- PyMuPDF / fitz (for PDFs)
-- python-docx (for DOCX files)
-- Optional: `gpg` installed on host if using encryption
+    Configurable scrubbing presets
 
-These are bundled automatically when using Docker.
+📦 Dependencies
 
----
+Included automatically in Docker builds:
 
-## 🛠️ Roadmap
+    Python 3.9+
 
-- [ ] Add support for PNG and video metadata  
-- [ ] UI enhancements for larger batch uploads  
-- [ ] Theme-aware UI toggle (in progress)  
-- [ ] One-click secure file wiping after processing  
+    Flask
 
----
+    Pillow
 
-## 📝 License
+    PyMuPDF (fitz)
 
-This project is licensed under the MIT License.
-You are free to use, modify, and distribute this software with proper attribution.
+    python-docx
 
----
+    openpyxl
 
-## 🤝 Contributions
+    Optional: gpg installed on host for encryption support
 
-Pull requests and issues are welcome.
+📝 License
 
-If you have ideas for improving local-first privacy tools, feel free to reach out or fork the project!
+Licensed under the MIT License.
+🤝 Contributions
 
----
+PRs and issues welcome.
 
-**Built with care by [KitQuietDev](https://github.com/KitQuietDev)** 🛡️
+If you have ideas for new handlers, postprocessors, or features, feel free to open an issue or submit a PR.
+💬 Contact
+
+Maintained by KitQuietDev
+GitHub: https://github.com/KitQuietDev
