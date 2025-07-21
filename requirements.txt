@@ -1,7 +1,12 @@
+# Web framework
 Flask
-piexif
-PyMuPDF
-python-docx
-openpyxl
-werkzeug
-python-dotenv
+
+# Metadata stripping libraries
+piexif         # For JPEG/Exif metadata removal
+PyMuPDF        # For PDF parsing and cleaning
+python-docx    # For DOCX (Word) file support
+openpyxl       # For XLSX (Excel) support
+
+# Flask dependencies and helpers
+werkzeug       # File handling & request helpers
+python-dotenv  # Load environment variables from .env
