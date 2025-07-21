@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark"> <!-- Helps the browser know both themes are supported -->
+  <title>rMeta</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 🌗 Theme Toggle Controls -->
+  <div class="theme-toggle-wrapper" style="text-align:center; margin-bottom: 1em;">
+    <div id="themeLabel" style="font-size: 0.9em; margin-bottom: 4px;">System</div>
+    <button id="themeToggle" title="Toggle theme (Next: Dark)">🖥️</button>
+  </div>
+
+  <h2>Upload files to remove metadata</h2>
+
+  <!-- 🧼 Upload form -->
+  <form id="uploadForm" method="post" enctype="multipart/form-data">
+    
+    <!-- 📂 Drag-and-drop zone -->
+    <div id="dropZone" class="drop-zone">
+      <p>Drag & drop files here or click to select</p>
+      <input type="file" name="file" multiple accept="{{ accept }}">
+    </div>
+    <br>
+
+    <!-- 🧮 Optional postprocessors -->
+    <label><input type="checkbox" name="generate_hash"> Generate hash (.sha256.txt)</label><br>
+    <label><input type="checkbox" name="encrypt_file"> Encrypt output with GPG</label><br>
+    
+    <!-- 🔐 GPG key input (required only if encryption is selected) -->
+    <label>
+      Public GPG key (.asc or .gpg): 
+      <input type="file" name="gpg_key" accept=".asc,.gpg">
+    </label><br>
+
+    <input type="submit" id="submitBtn" value="Upload">
+
+    <!-- ⚠️ Warning if GPG selected without key -->
+    <p id="gpgWarning" style="color: red; display: none;">⚠️ GPG encryption requires a key file.</p>
+  </form>
+
+  <!-- 📜 Status messages (success, error, etc.) -->
+  {% if messages %}
+    <ul>
+    {% for msg in messages %}
+      <li>{{ msg }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+  <!-- 📥 Download links for cleaned files -->
+  {% if session and files %}
+    <h3>Cleaned Files:</h3>
+    <ul>
+    {% for file in files %}
+      <li><a href="{{ url_for('download_file', session=session, filename=file) }}">{{ file }}</a></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+  <!-- 🧠 Scripts -->
+  <script src="{{ url_for('static', filename='theme-toggle.js') }}"></script>
+
+  <script>
+    // 🚨 GPG key validation logic
+    document.addEventListener("DOMContentLoaded", () => {
+      const gpgCheckbox = document.querySelector('input[name="encrypt_file"]');
+      const gpgKeyInput = document.querySelector('input[name="gpg_key"]');
+      const submitBtn = document.getElementById('submitBtn');
+      const gpgWarning = document.getElementById('gpgWarning');
+
+      function updateSubmitState() {
+        const gpgEnabled = gpgCheckbox.checked;
+        const gpgKeyAttached = gpgKeyInput.files.length > 0;
+
+        if (gpgEnabled && !gpgKeyAttached) {
+          submitBtn.disabled = true;
+          submitBtn.value = "🔐 GPG key required";
+          gpgWarning.style.display = 'block';
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.value = gpgEnabled ? "Encrypt & Upload" : "Upload";
+          gpgWarning.style.display = 'none';
+        }
+      }
+
+      gpgCheckbox.addEventListener('change', updateSubmitState);
+      gpgKeyInput.addEventListener('change', updateSubmitState);
+      updateSubmitState();
+
+      // 📦 Drag & Drop support
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = dropZone.querySelector('input[type="file"]');
+
+      dropZone.addEventListener('click', () => fileInput.click());
+
+      ['dragenter', 'dragover'].forEach(event =>
+        dropZone.addEventListener(event, e => {
+          e.preventDefault();
+          dropZone.classList.add('drag-over');
+        })
+      );
+
+      ['dragleave', 'drop'].forEach(event =>
+        dropZone.addEventListener(event, e => {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+        })
+      );
+
+      dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
