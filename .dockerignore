@@ -1,0 +1,33 @@
+# 🌐 Ignore version control
+.git
+.gitignore
+
+# 🗑️ Ignore system clutter
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+.DS_Store
+Thumbs.db
+
+# 🧪 Ignore local development/test data
+.env
+*.log
+*.bak
+*.tmp
+.vscode/
+.idea/
+
+# 📦 Ignore built containers, artifacts, and uploads
+*.tar
+*.zip
+*.gz
+*.egg-info/
+dist/
+build/
+
+# 🚫 Ignore any session or upload data (defensive)
+sessions/
+uploads/
+tmp/

@@ -1,0 +1,111 @@
+/* 🎨 GLOBAL STYLES */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  color: #111;
+  transition: background-color 0.3s, color 0.3s; /* smooth theme transitions */
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto; /* centers page horizontally */
+}
+
+/* 🧭 Headings */
+h2, h3 {
+  text-align: center;
+}
+
+/* 📋 Form container */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  align-items: center;
+  background-color: #eee;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+/* 📂 File input and submit button styles */
+input[type="file"],
+input[type="submit"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+}
+
+/* 📜 List and link styling */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: #007BFF; /* classic blue link */
+}
+
+/* 🌗 Theme toggle button position */
+.toggle-theme {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* 🌑 DARK MODE OVERRIDES */
+.dark-mode {
+  background-color: #121212;
+  color: #eee;
+}
+
+.dark-mode form {
+  background-color: #1e1e1e;
+}
+
+.dark-mode input[type="file"],
+.dark-mode input[type="submit"] {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.dark-mode a {
+  color: #66baff; /* softer, cooler link color for dark bg */
+}
+
+/* 📦 Drag-and-drop zone */
+.drop-zone {
+  border: 2px dashed #ccc;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.drop-zone.drag-over {
+  background-color: #eef;
+  border-color: #66f;
+}
+
+/* 🔲 Drop zone (dark mode overrides) */
+.dark-mode .drop-zone {
+  border-color: #555;
+  background-color: #1e1e1e;
+}
+
+.dark-mode .drop-zone.drag-over {
+  background-color: #333;
+  border-color: #88f;
+}

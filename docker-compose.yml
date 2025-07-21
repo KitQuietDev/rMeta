@@ -1,0 +1,36 @@
+services:
+  rMeta:
+    build: .
+    container_name: rMeta
+
+    # 🔌 Map internal port to host machine (from .env)
+    ports:
+      - "${FLASK_PORT}:${FLASK_PORT}"
+
+    # 🔐 Load environment variables (e.g., session timeout, debug mode)
+    env_file:
+      - .env
+
+    # 🗃️ Mount persistent or shared volumes
+    volumes:
+      # Optional: persists output files (if used outside /tmp)
+      - ./uploads:/app/uploads
+      # Optional: read-only GPG key directory for encryption
+      - ./keys:/app/keys:ro
+      # Dev mode: mount full project source (for live editing)
+      - .:/app
+
+    # 🔄 Automatically restart unless manually stopped
+    restart: unless-stopped
+
+    # 🧼 Optional: clean up container after stop (useful for dev)
+    # remove this line for persistent containers
+    # tmpfs:
+    #   - /tmp/rMeta
+
+    # 🐳 Optional: set logging driver or resource limits
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
