@@ -1,8 +1,20 @@
+"""
+XLSX Metadata Scrubber for MetaScrub
+
+Uses openpyxl to clear embedded document properties from Excel spreadsheets.
+"""
+
 from openpyxl import load_workbook
 
 supported_extensions = {"xlsx"}
 
 def scrub(file_path):
+    """
+    Scrubs metadata from an Excel XLSX file in place.
+
+    Args:
+        file_path (str): Path to the input XLSX file.
+    """
     try:
         wb = load_workbook(file_path)
         props = wb.properties
