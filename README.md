@@ -7,35 +7,35 @@ MetaScrub is a local-first, extensible metadata scrubber designed to prioritize 
 
 MetaScrub is built for:
 
-Journalists and whistleblowers
+  -Journalists and whistleblowers
 
-Privacy advocates
+  -Privacy advocates
 
-Security professionals
+  -Security professionals
 
-Anyone who wants total control over file sanitation
+  -Anyone who wants total control over file sanitation
 
 The architecture is modular, allowing easy extension through file-type-specific "handlers" and optional "postprocessors."
 ✅ Supported File Types
 
 Built-in handlers currently support:
 
-JPEG — strips EXIF metadata via Pillow
+  -JPEG — strips EXIF metadata via Pillow
 
-PDF — removes embedded metadata using PyMuPDF
+  -PDF — removes embedded metadata using PyMuPDF
 
-DOCX — clears author/history via python-docx
+  -DOCX — clears author/history via python-docx
 
-XLSX — strips metadata using openpyxl
+  -XLSX — strips metadata using openpyxl
 
 More formats can be added by dropping new handler modules into handlers/.
 🔐 Postprocessors (Optional)
 
 Postprocessors are applied after metadata has been stripped. Currently supported:
 
-✅ SHA256 hash generation — generates a .sha256.txt for verification
+  -✅ SHA256 hash generation — generates a .sha256.txt for verification
 
-✅ GPG encryption — encrypts cleaned files using a provided public key
+  -✅ GPG encryption — encrypts cleaned files using a provided public key
 
 Toggle these options via checkboxes in the UI.
 ✨ Features
@@ -95,31 +95,31 @@ MetaScrub/
 
 🛠️ Roadmap
 
-Add support for PNG, video, and audio files
+  -Add support for PNG, video, and audio files
 
-More robust GPG key validation
+  -More robust GPG key validation
 
-One-click secure wiping
+  -One-click secure wiping
 
-Batch download support
+  -Batch download support
 
-Configurable scrubbing presets
+  -Configurable scrubbing presets
 
 📦 Dependencies
 
 Included automatically in Docker builds:
 
-Python 3.9+
+  -Python 3.9+
 
-Flask
+  -Flask
 
-Pillow
+  -Pillow
 
-PyMuPDF (fitz)
+  -PyMuPDF (fitz)
 
-python-docx
+  -python-docx
 
-openpyxl
+  -openpyxl
 
 Optional: gpg installed on host for encryption support
 
