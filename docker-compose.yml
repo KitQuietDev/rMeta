@@ -1,0 +1,13 @@
+services:
+  metascrub:
+    build: .
+    container_name: metascrub
+    ports:
+      - "${FLASK_PORT}:${FLASK_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - ./uploads:/app/uploads
+      - ./keys:/app/keys:ro
+      - .:/app
+    restart: unless-stopped

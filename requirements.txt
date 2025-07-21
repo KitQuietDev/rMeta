@@ -1,0 +1,7 @@
+Flask
+piexif
+PyMuPDF
+python-docx
+openpyxl
+werkzeug
+python-dotenv
