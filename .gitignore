@@ -1,0 +1,38 @@
+# Bytecode + cache junk
+*.py[cod]
+__pycache__/
+*.so
+
+# Local env + test databases
+.env
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Temporary session folders (if outside /tmp)
+session_*/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Editor/project files
+.vscode/
+.idea/
+*.swp
+
+# Docker artifacts
+*.bak
+*.tar
+*.gz
+
+# If you're mounting file uploads locally
+uploads/
+*.sha256.txt
+*.gpg
+
+# macOS/Linux temp files
+*.~*
+*~
