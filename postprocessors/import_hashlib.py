@@ -8,6 +8,7 @@ Useful for verifying file integrity after scrubbing or encryption.
 import hashlib
 import os
 
+
 def generate_hash(file_path, algo="sha256"):
     """
     Generate a hash of the given file and save it to a separate .txt file.

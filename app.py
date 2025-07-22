@@ -29,13 +29,14 @@ app = Flask(__name__)
 # Configure logging for app-wide use
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL, logging.INFO),
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    format="%(asctime)s [%(levelname)s] %(message)s",
 )
 app.logger.setLevel(getattr(logging, LOG_LEVEL, logging.INFO))
 
 # Root directory for per-upload temporary folders
 SESSIONS_ROOT = "/tmp/rMeta"
 os.makedirs(SESSIONS_ROOT, exist_ok=True)
+
 
 # Schedule a background thread to delete a session folder after timeout
 # This helps prevent lingering sensitive files in the tmp directory
@@ -46,7 +47,9 @@ def schedule_cleanup(folder, delay=SESSION_TIMEOUT):
             app.logger.debug(f"✅ Deleted session folder: {folder}")
         except Exception as e:
             app.logger.exception(f"⚠️ Cleanup failed for {folder}: {e}")
+
     threading.Timer(delay, delete_later).start()
+
 
 # Route: Main landing page + file handler logic
 @app.route("/", methods=["GET", "POST"])
@@ -103,11 +106,14 @@ def upload_file():
                     messages.append(f"❌ Error generating hash for {filename}: {e}")
 
             # Postprocessing: Optional GPG encryption
-            if request.form.get("encrypt_file") and gpg_key_path and ENABLE_GPG_ENCRYPTION:
+            if (
+                request.form.get("encrypt_file")
+                and gpg_key_path
+                and ENABLE_GPG_ENCRYPTION
+            ):
                 try:
                     gpg_filename = gpg_encryptor.encrypt_with_gpg(
-                        save_path,
-                        public_key_path=gpg_key_path
+                        save_path, public_key_path=gpg_key_path
                     )
                     cleaned_files.append(gpg_filename)
                     messages.append(f"🔐 Encrypted: {gpg_filename}")
@@ -131,14 +137,16 @@ def upload_file():
         session=session_id,
         accept=accept_list,
         enable_gpg=ENABLE_GPG_ENCRYPTION,
-        processing_time=processing_time  # ⬅️ Safely passed to template
+        processing_time=processing_time,  # ⬅️ Safely passed to template
     )
+
 
 # Route: Serve individual download links
 @app.route("/download/<session>/<filename>")
 def download_file(session, filename):
     session_dir = os.path.join(SESSIONS_ROOT, secure_filename(session))
     return send_from_directory(session_dir, filename, as_attachment=True)
+
 
 # Entrypoint: launch Flask app if run directly
 if __name__ == "__main__":

@@ -36,3 +36,4 @@ uploads/
 # macOS/Linux temp files
 *.~*
 *~
+.venv/
