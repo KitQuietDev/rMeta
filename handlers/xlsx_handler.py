@@ -8,6 +8,7 @@ from openpyxl import load_workbook
 
 supported_extensions = {"xlsx"}
 
+
 def scrub(file_path):
     """
     Scrubs metadata from an Excel XLSX file in place.
