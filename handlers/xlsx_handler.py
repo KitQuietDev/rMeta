@@ -1,5 +1,5 @@
 """
-XLSX Metadata Scrubber for MetaScrub
+XLSX Metadata Scrubber for rMeta
 
 Uses openpyxl to clear embedded document properties from Excel spreadsheets.
 """
