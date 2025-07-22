@@ -1,5 +1,5 @@
 """
-Hash Generator Postprocessor for MetaScrub
+Hash Generator Postprocessor for rMeta
 
 Generates a checksum file for a given file using a specified hashing algorithm.
 Useful for verifying file integrity after scrubbing or encryption.
