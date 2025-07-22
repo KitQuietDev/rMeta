@@ -10,6 +10,7 @@ import os
 
 supported_extensions = {"docx"}
 
+
 def scrub(file_path):
     """
     Scrubs metadata from a DOCX file by copying contents to a clean document.
