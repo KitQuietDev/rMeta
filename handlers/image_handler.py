@@ -8,6 +8,7 @@ import piexif
 
 supported_extensions = {"jpg", "jpeg", "png"}
 
+
 def scrub(file_path):
     """
     Scrubs metadata from an image file in place.

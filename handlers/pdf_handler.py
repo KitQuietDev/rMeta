@@ -10,6 +10,7 @@ import os
 
 supported_extensions = {"pdf"}
 
+
 def scrub(file_path):
     """
     Scrubs metadata from a PDF file in place.
