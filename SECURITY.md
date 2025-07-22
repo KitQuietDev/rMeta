@@ -2,7 +2,7 @@
 
 ## Reporting Vulnerabilities
 
-If you find a security issue in rMeta, please email [your ProtonMail] privately.
+If you find a security issue in rMeta, please email kitquiet@proton.me privately.
 
 Do not submit public issues for sensitive problems. Responsible disclosure is appreciated and will be reviewed promptly.
 
