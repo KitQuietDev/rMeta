@@ -3,6 +3,7 @@ import shutil
 import tempfile
 import threading
 import logging
+import time  # ⬅️ Added for timing
 from flask import Flask, request, send_from_directory, render_template
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
@@ -53,8 +54,11 @@ def upload_file():
     messages = []
     cleaned_files = []
     session_id = None
+    processing_time = None  # ⬅️ Initialize to avoid UnboundLocalError
 
     if request.method == "POST":
+        start_time = time.perf_counter()  # ⬅️ Start timing
+
         files = request.files.getlist("file")
         session_dir = tempfile.mkdtemp(prefix="session_", dir=SESSIONS_ROOT)
         session_id = os.path.basename(session_dir)
@@ -110,6 +114,11 @@ def upload_file():
                 except Exception as e:
                     messages.append(f"❌ GPG encryption failed for {filename}: {e}")
 
+        # Total processing time
+        elapsed = time.perf_counter() - start_time
+        processing_time = f"{elapsed:.2f}s"
+        messages.append(f"⚡ Total processing time: {processing_time}")
+
         # Start background cleanup for this session folder
         schedule_cleanup(session_dir)
 
@@ -122,6 +131,7 @@ def upload_file():
         session=session_id,
         accept=accept_list,
         enable_gpg=ENABLE_GPG_ENCRYPTION,
+        processing_time=processing_time  # ⬅️ Safely passed to template
     )
 
 # Route: Serve individual download links

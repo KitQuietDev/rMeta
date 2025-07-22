@@ -1,7 +1,7 @@
 services:
-  rMeta:
+  rmeta:
     build: .
-    container_name: rMeta
+    container_name: rmeta
 
     # 🔌 Map internal port to host machine (from .env)
     ports:
