@@ -37,3 +37,8 @@ uploads/
 *.~*
 *~
 .venv/
+
+#My files - KEEP OUT - DANGER DANGER DANGER
+/dev/
+/backups/
+/sandbox/
