@@ -5,7 +5,9 @@ Flask
 piexif         # For JPEG/Exif metadata removal
 PyMuPDF        # For PDF parsing and cleaning
 python-docx    # For DOCX (Word) file support
-openpyxl       # For XLSX (Excel) support
+nometa         # For XLSX (Excel) support
+pyheif
+Pillow
 
 # Flask dependencies and helpers
 werkzeug       # File handling & request helpers

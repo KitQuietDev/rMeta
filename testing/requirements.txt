@@ -1,0 +1,6 @@
+python-docx
+openpyxl
+PyPDF2
+Pillow
+piexif
+pillow-heif

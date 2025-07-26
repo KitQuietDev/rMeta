@@ -1,0 +1,8 @@
+2025-07-25 20:39:00,536: Starting metadata corruption gauntlet
+2025-07-25 20:39:00,537: Corrupted TXT with PII and spoofed timestamp
+2025-07-25 20:39:00,537: Corrupted CSV with synthetic PII
+2025-07-25 20:39:00,562: Created PNG with fake GPS + junk metadata
+2025-07-25 20:39:00,609: Corrupted DOCX with hidden SSN and spoofed author
+2025-07-25 20:39:00,617: Corrupted PDF with invalid metadata key
+2025-07-25 20:39:00,627: Corrupted XLSX with embedded emails + custom sheet name
+2025-07-25 20:39:00,629: Corrupted JPG with spoofed EXIF tags

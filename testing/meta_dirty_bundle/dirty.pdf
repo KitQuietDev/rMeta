@@ -1,0 +1,49 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+2 0 obj
+<<
+/Producer (PyPDF2)
+/Author (GhostWriter)
+/Title (Corrupted\040Metadata)
+/Subject (Hidden\040Data\040Test)
+/JunkKey (˛ˇ\000\000\000\001\000\002\000\003)
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+>>
+/MediaBox [ 0 0 72 72 ]
+/Parent 1 0 R
+>>
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000015 00000 n 
+0000000074 00000 n 
+0000000247 00000 n 
+0000000296 00000 n 
+trailer
+<<
+/Size 5
+/Root 3 0 R
+/Info 2 0 R
+>>
+startxref
+384
+%%EOF
