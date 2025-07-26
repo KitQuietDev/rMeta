@@ -51,6 +51,9 @@ docker compose build
 docker compose up
 ```
 Then drop a file into the UI and watch the metadata vanish.
+# 🧪 Internal Testing Artifacts
+
+The testing/ directory contains sample files and scripts used during development. It’s not meant to enforce a test suite — it’s there to illustrate what rMeta was validated against. These assets can help you explore edge cases or understand scrubbing logic in context.
 # 🌱 Want to Contribute?
 
 We’re modular. Every file type gets its own handler — and if you're adding a new one, there are patterns you can follow to make it clean, testable, and user-friendly.
