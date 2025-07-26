@@ -28,4 +28,7 @@ COPY . .
 EXPOSE 8574
 
 # 🚀 Start the Flask app
-CMD ["python", "app.py"]
+CMD ["python3", "-u", "app.py"]
+
+# TEMPORARY
+RUN ls -la handlers/

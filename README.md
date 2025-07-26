@@ -1,134 +1,58 @@
-# 🧼 rMeta
+# 🧼 rMeta: Clean Your Files, Keep Your Privacy
 
-**rMeta** is your local-first tool for cleaning metadata from sensitive files—no cloud, no tracking, no leaks. Run it entirely on your machine and take full control over digital hygiene.
+rMeta is a metadata scrubber built for people who care about privacy, digital safety, and control over what leaves their machine. It's fast, local-only, and designed for journalists, researchers, lawyers, activists, and honestly anyone who just wants to make sure their documents don’t secretly leak where they’ve been.  It automatically deletes and recreates its workspace for extra safety and it never, **ever** phones anywhere.
 
-📁 Just drag and drop files into the browser to get scrubbed versions back. Optionally add hashing or GPG encryption on your terms.
-## 🔍 Who’s It For?
+You drag a file in, rMeta strips away the noise, and you get a clean version out. No snooping, no nonsense.
 
-rMeta is made for:
+*Don't have javascript?*  Cool.  rMeta will still work and won't complain; it just doesn't change themes without it.  
 
-- 🕵️ Journalists and whistleblowers  
-- 🔐 Privacy advocates  
-- 🛡️ Security professionals  
-- 👤 Anyone who wants true digital autonomy
+rMeta can generate SHA256 hashfiles (.txt format) and can accept GPG public keys to encrypt results. 
+# 🔍 OK, You Seem Enthusiastic.  Why Should We Care?
+This project started when we couldn't find a sole-source piece of kit that could handle multiple filetypes, cost nothing (really), and make us feel comfortable about sharing sensitive files.  
 
-It’s modular, extensible, and easy to tailor via its handler-based architecture.
-## ✅ What File Types Are Supported?
+We set out to create something:
+- **Durable.**  The architecture allows hyper-specialization of each of the three module types (app.py, handlers, and postprocessors).
+- **Customizable.**  We don't handle files you want?  Write your own handler!  
+- **Fast.** Asynchronous architecture means rMeta handles multiple files simultaneously - even if there are errors.
+- **Smart.** We made sure rMeta does its best to *elegantly* fail while also providing warnings, messages, and logpoints - all accessible by you.
+- **Private.** It will **never** send your data anywhere.  Everything is stored in a temporary workspace.  You have full control.
+- **Secure.** rMeta can generate SHA256 hashfiles AND use your GPG public key to encrypt files at runtime.  
+# ✨ What Changed in v0.2.0
 
-Out of the box:
+### You’re not imagining it: this release is a *full* renovation. Here’s what’s new:
+- ✅ **App Overhaul:** app.py now acts as a lightweight async router and message dispatcher. Handlers now...handle...validation, security functions, and metadata stripping; leaving app.py to route with the kind of speed that should probably be regulated.
+- ✅ **Handler Logic Hardened:** DOCX, PDF, XLSX, HEIC, CSV/TXT — every handler now handles its own validation, logging, scrubbing, and error throwing.
+- ✅ **PII Detection:** Scans files for possible personally identifiable information and warns when found.
 
-- **JPEG** — EXIF wiped via Pillow  
-- **PDF** — Metadata scrubbed via PyMuPDF  
-- **DOCX** — Author/history removed via python-docx  
-- **XLSX** — Cleanup via openpyxl
+- ✅ **HEIC Support:** Those weird .heic images? Now scrubbed and automatically converted to .jpeg, with dynamic UI warnings to let you know.
 
-Want more? Just drop a custom module into `handlers/`.
-## 🔐 Optional Add-ons
+- ✅ **Smart Messaging:** Each handler can now suggest feedback (like format warnings) through a new method. The app picks them up and shows them cleanly in the UI.
 
-Post-processing extras you can toggle in the UI:
+- ✅ **Repo Hygiene Fixes:** We finally kicked out rogue .pyc files, and .gitignore actually ignores what it’s supposed to. The shame is gone.
 
-- ✅ **SHA256 Hashes** — `.sha256.txt` verification file  
-- ✅ **GPG Encryption** — encrypt files using your own public key (must be uploaded)
-## 🧩 Extending rMeta
+# 🗂️ File Types Supported
+- **JPEG** (Cleaned in-place)
+- **PDF** (Uses metadata library)
+- **DOCX** (Handles XML content safely)
+- **XLSX** (Strips metadata tags cleanly)
+- **HEIC** (Converts to JPEG + scrubs)
+- **TXT / CSV** (Minimal metadata, but still checked)
+# 💡 Why This Matters
 
-Want to add support for more file types (e.g., PNG, MP4, SVG)?
+We believe privacy shouldn’t require technical gymnastics. That’s why rMeta is designed to work offline, give you full control, and tell you what's happening without burying you in jargon. If you want encryption, you’ve got it. If you want drag-and-drop simplicity, it’s here too.
 
-1. Create a new module in `handlers/` following the examples inside.
-2. Register it in `app.py` by importing it and adding to the supported types.
-3. Rebuild the Docker container so the changes apply:
+You shouldn't have to be a cybersecurity expert to stay safe. This tool is built with that philosophy **front and center**.
+# 🛠️ Getting Started
 
-```bash
-docker-compose build
-docker-compose up
-```
-🛠️ You must rebuild the container (with ```docker-compose up --build```)any time you change backend Python code or add files (like handlers or postprocessors).
-Changes to **.html, .js, or .css** files **do not** require a rebuild — just refresh your browser.
-## ✨ Features At-A-Glance
-
-- 🧼 Local-first processing  
-- 🖥️ Browser-based UI  
-- 🔌 Modular architecture (easy to extend)  
-- 🔒 Optional hashing + GPG encryption  
-- 🧹 Temporary files are deleted after download  
-- 🎨 Light/dark/system theme toggle  
-- 🐳 Dockerized for clean deploy  
-- ⚙️ `.env` config for ports and tweaks
-## 🚀 Get Started
-
-Build and run with Docker:
+You’ll need Docker. Once installed, try:
 
 ```bash
-docker build -t rMeta .
-docker run -p 8574:8574 rMeta
+docker compose build
+docker compose up
 ```
+Then drop a file into the UI and watch the metadata vanish.
+# 🌱 Want to Contribute?
 
-Or fire it up with Docker Compose:
+We’re modular. Every file type gets its own handler — and if you're adding a new one, there are patterns you can follow to make it clean, testable, and user-friendly.
 
-```bash
-docker-compose up --build
-```
-
-Open your browser to:
-
-```
-http://localhost:8574
-```
-## 📦 Project Structure
-
-```
-rMeta/
-├── app.py              # Main Flask backend
-├── handlers/           # File scrubbers per format
-├── postprocessors/     # Hashing, encryption
-├── static/             # CSS & JS
-├── templates/          # Browser interface
-├── Dockerfile          # Build recipe
-├── docker-compose.yml  # Container orchestration
-├── .env                # Runtime config
-└── requirements.txt    # Python dependencies
-```
-## 🛡️ Privacy-First Philosophy
-
-- ✅ Nothing ever leaves your machine  
-- ✅ No analytics, no trackers  
-- ✅ Temp files wiped after download  
-- ✅ Encryption is optional and fully local
-## 📈 Roadmap
-
-Coming soon:
-
-- [ ] PNG, video, and audio support  
-- [ ] Smarter GPG key validation  
-- [ ] One-click file wiping  
-- [ ] Batch downloads  
-- [ ] Scrubbing presets (light, aggressive, etc.)
-## 📋 Dependencies
-
-Docker image bundles:
-
-- Python 3.9+  
-- Flask  
-- Pillow  
-- PyMuPDF (fitz)  
-- python-docx  
-- openpyxl  
-- Optional: `gpg` installed for encryption
-## 📝 License
-
-MIT—fork it, remix it, ship it. Just give credit.
-## 🤝 Contributions
-
-PRs, issues, suggestions—all welcome.
-
-Have an idea for a new handler or feature? Drop a line or send a pull request.
-## 💬 Maintainer
-
-Created by [KitQuietDev](https://github.com/KitQuietDev)
-
-## 📸 Screenshots
-
-### Upload Interface
-![Upload interface](docs/images/screenshot_start.png)
-
-### After Processing (with hash generation)
-![After processing](docs/images/screenshot_result.png)
+We're happy to help onboard folks who want to improve the tool or add support for obscure formats. If you write code, great. If you just want to suggest improvements, that’s just as valuable.

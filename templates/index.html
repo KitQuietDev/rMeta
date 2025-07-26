@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="color-scheme" content="light dark"> <!-- Helps the browser know both themes are supported -->
+  <meta name="color-scheme" content="light dark">
   <title>rMeta</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -26,11 +26,16 @@
     </div>
     <br>
 
+    <!-- ⚠️ Smart format warning (HEIC-specific) -->
+    <div id="heicWarning" style="display:none; color: #b8860b; font-weight: bold; margin-bottom: 0.5em;">
+      ⚠️ HEIC images will be converted to JPEG format during metadata scrub. This may affect transparency or quality.
+    </div>
+
     <!-- 🧮 Optional postprocessors -->
     <label><input type="checkbox" name="generate_hash"> Generate hash (.sha256.txt)</label><br>
     <label><input type="checkbox" name="encrypt_file"> Encrypt output with GPG</label><br>
     
-    <!-- 🔐 GPG key input (required only if encryption is selected) -->
+    <!-- 🔐 GPG key input -->
     <label>
       Public GPG key (.asc or .gpg): 
       <input type="file" name="gpg_key" accept=".asc,.gpg">
@@ -38,20 +43,24 @@
 
     <input type="submit" id="submitBtn" value="Upload">
 
-    <!-- ⚠️ Warning if GPG selected without key -->
+    <!-- 🔐 GPG key required warning -->
     <p id="gpgWarning" style="color: red; display: none;">⚠️ GPG encryption requires a key file.</p>
   </form>
 
-  <!-- 📜 Status messages (success, error, etc.) -->
+  <!-- 📜 Status messages -->
   {% if messages %}
     <ul>
     {% for msg in messages %}
-      <li>{{ msg }}</li>
+      {% if "⚠️" in msg %}
+        <li style="color: darkorange;"><strong>{{ msg }}</strong></li>
+      {% else %}
+        <li>{{ msg }}</li>
+      {% endif %}
     {% endfor %}
     </ul>
   {% endif %}
 
-  <!-- 📥 Download links for cleaned files -->
+  <!-- 📥 Download links -->
   {% if session and files %}
     <h3>Cleaned Files:</h3>
     <ul>
@@ -65,13 +74,15 @@
   <script src="{{ url_for('static', filename='theme-toggle.js') }}"></script>
 
   <script>
-    // 🚨 GPG key validation logic
     document.addEventListener("DOMContentLoaded", () => {
       const gpgCheckbox = document.querySelector('input[name="encrypt_file"]');
       const gpgKeyInput = document.querySelector('input[name="gpg_key"]');
       const submitBtn = document.getElementById('submitBtn');
       const gpgWarning = document.getElementById('gpgWarning');
+      const heicWarning = document.getElementById('heicWarning');
+      const fileInput = document.querySelector('input[name="file"]');
 
+      // 🧠 GPG key validation logic
       function updateSubmitState() {
         const gpgEnabled = gpgCheckbox.checked;
         const gpgKeyAttached = gpgKeyInput.files.length > 0;
@@ -91,9 +102,20 @@
       gpgKeyInput.addEventListener('change', updateSubmitState);
       updateSubmitState();
 
+      // 🧠 HEIC detection logic
+      fileInput.addEventListener('change', () => {
+        let showHeic = false;
+        for (const file of fileInput.files) {
+          if (file.name.toLowerCase().endsWith(".heic")) {
+            showHeic = true;
+            break;
+          }
+        }
+        heicWarning.style.display = showHeic ? 'block' : 'none';
+      });
+
       // 📦 Drag & Drop support
       const dropZone = document.getElementById('dropZone');
-      const fileInput = dropZone.querySelector('input[type="file"]');
 
       dropZone.addEventListener('click', () => fileInput.click());
 
@@ -115,6 +137,15 @@
         e.preventDefault();
         if (e.dataTransfer.files.length) {
           fileInput.files = e.dataTransfer.files;
+
+          let showHeic = false;
+          for (const file of e.dataTransfer.files) {
+            if (file.name.toLowerCase().endsWith(".heic")) {
+              showHeic = true;
+              break;
+            }
+          }
+          heicWarning.style.display = showHeic ? 'block' : 'none';
         }
       });
     });
