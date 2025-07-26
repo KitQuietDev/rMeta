@@ -4,6 +4,7 @@ __pycache__/
 *.so
 
 # Don't share public keys unnecessarily
+*.key
 *.keys
 
 # Local env + test databases
