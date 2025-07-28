@@ -1,6 +1,6 @@
 services:
   rmeta:
-    build: .
+    image: kitquietdev/rmeta:latest
     container_name: rmeta
 
     # 🔌 Map internal port to host machine (from .env)
