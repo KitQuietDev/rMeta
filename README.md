@@ -85,4 +85,3 @@ The testing/ directory contains sample files and scripts used during development
 We’re modular. Every file type gets its own handler — and if you're adding a new one, there are patterns you can follow to make it clean, testable, and user-friendly.
 
 We're happy to help onboard folks who want to improve the tool or add support for obscure formats. If you write code, great. If you just want to suggest improvements, that’s just as valuable.
-# Trigger build
