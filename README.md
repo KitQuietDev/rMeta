@@ -43,23 +43,29 @@ You’ll need Docker. Once installed, choose your weapon:
 **Pull and run (Prebuilt)**
 
 ```bash
-docker pull ghcr.io/KitQuietDev/rmeta:latest
-docker run -it --rm -p 8574:8574 ghcr.io/KitQuietDev/rmeta:latest
+# Pull the prebuilt image
+docker pull ghcr.io/kitquietdev/rmeta:latest
+
+# Run the container in detached mode
+docker run -d --name rmeta --rm -p 8574:8574 ghcr.io/kitquietdev/rmeta:latest
+
+#Or, using Docker Compose
+docker compose up -d
+
 ```
 
 **OR Build and run locally**
 
 ```bash
 # Clone the repository
-git clone https://github.com/KitQuietDev/rmeta.git
+git clone https://github.com/kitquietdev/rmeta.git
 cd rmeta
 
-# Build the Docker image locally
-docker build -t rmeta:local .
+# Build the Docker image locally and tag it like the prebuilt one
+docker build -t kitquietdev/rmeta:latest .
 
-# Run the container
-docker run -it --rm -p 8574:8574 rmeta:local
-
+# Run the container in detached mode with the same name and port
+docker run -d --name rmeta --rm -p 8574:8574 kitquietdev/rmeta:latest
 ```
 
 Open your browser and visit `http://localhost:8574`. Then drop a file into the UI and watch the metadata vanish.
