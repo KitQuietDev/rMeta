@@ -38,34 +38,38 @@ You shouldn't have to be a cybersecurity expert to stay safe. This tool is built
 
 # 🛠️ Getting Started
 
-You’ll need Docker. Once installed, choose your weapon:
+You’ll need Docker (and a bash-compatible shell). Once installed, choose your weapon:
 
-**Pull and run (Prebuilt)**
+### 🟢 Option 1: Quick and Dirty — `docker run`
+
+Fastest way to get started. No setup, no config—just run it:
 
 ```bash
-# Pull the prebuilt image
-docker pull ghcr.io/kitquietdev/rmeta:latest
-
-# Run the container in detached mode
-docker run -d --name rmeta --rm -p 8574:8574 ghcr.io/kitquietdev/rmeta:latest
-
-#Or, using Docker Compose
-docker compose up -d
-
+docker run -d \
+  --name rmeta \
+  --rm \
+  -p 8574:8574 \
+  ghcr.io/kitquietdev/rmeta:latest
 ```
 
-**OR Build and run locally**
+### 🟡 Option 2: Compose It Right — Using the Available `docker-compose.yml`
+
+More structured. Gives you control over config, ports, volumes, environment variables, etc.
 
 ```bash
-# Clone the repository
-git clone https://github.com/kitquietdev/rmeta.git
-cd rmeta
+mkdir rmeta && cd rmeta
+curl -O https://raw.githubusercontent.com/kitquietdev/rMeta/main/docker-compose.yml
+docker compose up -d
+```
 
-# Build the Docker image locally and tag it like the prebuilt one
-docker build -t kitquietdev/rmeta:latest .
+### 🟣 Option 3: Clone + Run — Use the Codebase Directly
 
-# Run the container in detached mode with the same name and port
-docker run -d --name rmeta --rm -p 8574:8574 kitquietdev/rmeta:latest
+If you want the source alongside your container for development, customization, or contributions.
+
+```bash
+git clone https://github.com/kitquietdev/rMeta.git
+cd rMeta
+docker compose up -d
 ```
 
 Open your browser and visit `http://localhost:8574`. Then drop a file into the UI and watch the metadata vanish.
