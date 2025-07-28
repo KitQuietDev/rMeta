@@ -21,7 +21,7 @@ COPY handlers/ handlers/
 COPY postprocessors/ postprocessors/
 COPY static/ static/
 COPY templates/ templates/
-COPY keys/ keys/
+COPY keys/ /app/keys/
 
 # 📄 Copy metadata and config files
 COPY README.md ./
