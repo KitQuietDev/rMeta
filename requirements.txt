@@ -1,12 +1,12 @@
 # Web framework
-Flask
+Flask          # Flask is a web server that allows user interaction in-browser
 
 # Metadata stripping libraries
 piexif         # For JPEG/Exif metadata removal
 PyMuPDF        # For PDF parsing and cleaning
 python-docx    # For DOCX (Word) file support
 nometa         # For XLSX (Excel) support
-pyheif
+pyheif         # For HEIC (iOS photos) support
 Pillow
 
 # Flask dependencies and helpers

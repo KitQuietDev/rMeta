@@ -12,7 +12,6 @@ __pycache__/
 Thumbs.db
 
 # 🧪 Ignore local development/test data
-.env
 *.log
 *.bak
 *.tmp
@@ -31,3 +30,10 @@ build/
 sessions/
 uploads/
 tmp/
+
+# Ignore linting until implemented
+.flake8
+
+#Ignore any keys accidentally left in tree
+*.key
+*.keys

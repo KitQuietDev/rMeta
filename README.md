@@ -21,17 +21,6 @@ We set out to create something:
 - **Private.** It will **never** send your data anywhere.  Everything is stored in a temporary workspace.  You have full control.
 - **Secure.** rMeta can generate SHA256 hashfiles AND use your GPG public key to encrypt files at runtime.
 
-# ✨ What Changed in v0.2.0
-
-### You’re not imagining it: this release is a *full* renovation. Here’s what’s new:
-
-- ✅ **App Overhaul:** app.py now acts as a lightweight async router and message dispatcher. Handlers now...handle...validation, security functions, and metadata stripping; leaving app.py to route with the kind of speed that should probably be regulated.
-- ✅ **Handler Logic Hardened:** DOCX, PDF, XLSX, HEIC, CSV/TXT — every handler now handles its own validation, logging, scrubbing, and error throwing.
-- ✅ **PII Detection:** Scans files for possible personally identifiable information and warns when found.
-- ✅ **HEIC Support:** Those weird .heic images? Now scrubbed and automatically converted to .jpeg, with dynamic UI warnings to let you know.
-- ✅ **Smart Messaging:** Each handler can now suggest feedback (like format warnings) through a new method. The app picks them up and shows them cleanly in the UI.
-- ✅ **Repo Hygiene Fixes:** We finally kicked out rogue .pyc files, and .gitignore actually ignores what it’s supposed to. The shame is gone.
-
 # 🗂️ File Types Supported
 
 - **JPEG** (Cleaned in-place)
@@ -49,21 +38,40 @@ You shouldn't have to be a cybersecurity expert to stay safe. This tool is built
 
 # 🛠️ Getting Started
 
-You’ll need Docker. Once installed, try:
+You’ll need Docker. Once installed, choose your weapon:
+
+**Pull and run (Prebuilt)**
 
 ```bash
-docker compose build
-docker compose up
+docker pull ghcr.io/KitQuietDev/rmeta:latest
+docker run -it --rm -p 8574:8574 ghcr.io/KitQuietDev/rmeta:latest
 ```
 
-Then drop a file into the UI and watch the metadata vanish.
+**OR Build and run locally**
+
+```bash
+# Clone the repository
+git clone https://github.com/KitQuietDev/rmeta.git
+cd rmeta
+
+# Build the Docker image locally
+docker build -t rmeta:local .
+
+# Run the container
+docker run -it --rm -p 8574:8574 rmeta:local
+
+```
+
+Open your browser and visit `http://localhost:8574`. Then drop a file into the UI and watch the metadata vanish.
 
 # 🧪 Internal Testing Artifacts
 
 The testing/ directory contains sample files and scripts used during development. It’s not meant to enforce a test suite — it’s there to illustrate what rMeta was validated against. These assets can help you explore edge cases or understand scrubbing logic in context.
 
 # Screenshot
-![rMeta v0.2.0 UI](docs/images/screenshot.png)
+
+![rMeta UI](docs/images/screenshot.png)
+
 > Real-time feedback, smart messaging, and file-level status reporting – all in one lightweight interface.
 
 # 🌱 Want to Contribute?

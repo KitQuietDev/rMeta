@@ -20,15 +20,15 @@ COPY app.py .
 COPY handlers/ handlers/
 COPY postprocessors/ postprocessors/
 COPY static/ static/
+COPY templates/ templates/
+COPY keys/ keys/
 
-# 🧹 Copy anything else (README, .env, etc.)
-COPY . .
+# 📄 Copy metadata and config files
+COPY README.md ./
+COPY .env ./
 
 # 🌐 Expose the Flask port
 EXPOSE 8574
 
 # 🚀 Start the Flask app
 CMD ["python3", "-u", "app.py"]
-
-# TEMPORARY
-RUN ls -la handlers/

@@ -1,0 +1,39 @@
+[33m3dc773c[m[33m ([m[1;36mHEAD -> [m[1;32mupgrade-0.2.0[m[33m)[m HEAD@{0}: reset: moving to 3dc773c
+[33m3dc773c[m[33m ([m[1;36mHEAD -> [m[1;32mupgrade-0.2.0[m[33m)[m HEAD@{1}: commit: Prep for rebase: staging local work
+[33m00010c6[m HEAD@{2}: commit: WIP: minor local edits before rebase
+[33m0d6d123[m HEAD@{3}: commit: Refactor architecture for v0.2.0 — modular core, handler upgrades, workspace controls
+[33mda5c454[m HEAD@{4}: commit: Remove cached bytecode and __pycache__ artifacts
+[33mc38df69[m[33m ([m[1;32mmain[m[33m)[m HEAD@{5}: checkout: moving from main to upgrade-0.2.0
+[33mc38df69[m[33m ([m[1;32mmain[m[33m)[m HEAD@{6}: pull --rebase (finish): returning to refs/heads/main
+[33mc38df69[m[33m ([m[1;32mmain[m[33m)[m HEAD@{7}: pull --rebase (pick): Initial commit with custom .gitignore to exclude dev/ backups/ sandbox/
+[33maa2a110[m HEAD@{8}: pull --rebase (start): checkout aa2a11021b3271be79ffb198f8019fa513c7bf2f
+[33m824728d[m HEAD@{9}: commit: Initial commit with custom .gitignore to exclude dev/ backups/ sandbox/
+[33mfff99ee[m HEAD@{10}: commit: chore: explored flake8 and black without venv noise
+[33m878d2df[m HEAD@{11}: reset: moving to HEAD~1
+[33m667d500[m HEAD@{12}: commit: chore: explored flake8 and black to make some auto-fixes
+[33m878d2df[m HEAD@{13}: reset: moving to HEAD
+[33m878d2df[m HEAD@{14}: reset: moving to HEAD
+[33m878d2df[m HEAD@{15}: commit: chore: add .gitignore for repo hygiene
+[33mb8747a3[m HEAD@{16}: commit: fix: update metadata scrub timing & Docker tag lowercase
+[33mf604f1f[m HEAD@{17}: commit: chore: finalize rename cleanup in xlsx and postprocessor modules
+[33m3823193[m[33m ([m[1;33mtag: v0.1.5[m[33m)[m HEAD@{18}: commit (amend): Initial public release: rMeta v0.1.5 – privacy-first metadata scrubber
+[33mbd6bf9a[m HEAD@{19}: commit (amend): Initial commit for rMeta v0.1.5
+[33m794788c[m HEAD@{20}: Branch: renamed refs/heads/cleaned-main to refs/heads/main
+[33m794788c[m HEAD@{22}: commit (initial): Initial commit for rMeta v0.1.5
+[33m84b1365[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{23}: commit: Add UI screenshots and update README.md to include them
+[33maa44763[m HEAD@{24}: commit: Add screenshots of UI before and after processing
+[33m243583e[m HEAD@{25}: commit: Documented all handlers + added DEVELOPERS.md
+[33mc093e36[m HEAD@{26}: commit: Clean: remove tracked pyc files and respect .gitignore
+[33m2fcffda[m HEAD@{27}: commit: Update README with proper license section
+[33mace40df[m HEAD@{28}: commit: Update README with proper license section
+[33m8362af0[m HEAD@{29}: commit: Update README with proper license section
+[33mfbc92ac[m HEAD@{30}: commit: Update README with proper license section
+[33mbcd7bce[m HEAD@{31}: commit: Update README with proper license section
+[33m7c46f33[m HEAD@{32}: commit: Update README with proper license section
+[33m0ce5d62[m HEAD@{33}: commit: Update README with proper license section
+[33m9d8e057[m HEAD@{34}: commit: Update README with proper license section
+[33me86ec45[m HEAD@{35}: commit: Add MIT License
+[33m2d6ecd9[m HEAD@{36}: commit (amend): Initial commit
+[33mb7c5bbf[m HEAD@{37}: commit (amend): Initial commit
+[33mc5e65f8[m HEAD@{38}: commit (amend): Initial commit
+[33me79716a[m HEAD@{39}: commit (initial): Initial commit
