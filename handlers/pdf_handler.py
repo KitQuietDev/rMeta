@@ -1,37 +1,35 @@
 """
-PDF Metadata Scrubber for rMeta
+PDF Metadata Scrubber + PII Scanner for rMeta
 
-Uses PyMuPDF (fitz) to strip all embedded metadata from PDF files.
-Rewrites the file in-place with no backups or artifacts.
+Scrubs embedded metadata using PyPDF2, scans visible text for potential PII types.
+Rewrites file in place, returns warnings following rMeta's handler convention.
 """
 
 import logging
 import os
+import re
 from pathlib import Path
+from typing import List
 
-try:
-    import fitz  # PyMuPDF
-except ImportError:
-    raise ImportError("PyMuPDF (fitz) is required. Install with: pip install PyMuPDF")
+import pdfplumber
+from PyPDF2 import PdfReader, PdfWriter
 
 logger = logging.getLogger(__name__)
-__all__ = ["scrub"]
+__all__ = ["scrub", "get_additional_messages"]
 
 SUPPORTED_EXTENSIONS = {"pdf"}
 
+# PII regex patterns
+PII_PATTERNS = {
+    "social security number": re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+    "address": re.compile(r"\d{1,5}\s+\w+\s+(Street|St|Avenue|Ave|Rd|Road|Blvd|Boulevard)\b", re.IGNORECASE),
+    "name": re.compile(r"\b[A-Z][a-z]+\s+[A-Z][a-z]+\b"),  # Simplified: capitalized first & last
+    "email": re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+    "phone number": re.compile(r"\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b"),
+}
+
+
 def scrub(file_path: str) -> None:
-    """
-    Scrubs metadata from a PDF file in place.
-
-    Args:
-        file_path (str): Path to the input PDF file.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        PermissionError: If the file cannot be accessed.
-        ValueError: If the extension is unsupported.
-        RuntimeError: If scrubbing or output confirmation fails.
-    """
     path = Path(file_path)
     ext = path.suffix.lower().lstrip(".")
 
@@ -43,11 +41,18 @@ def scrub(file_path: str) -> None:
         raise ValueError(f"Unsupported file type: {ext}. Only 'pdf' is supported.")
 
     try:
-        doc = fitz.open(str(path))
-        doc.set_metadata({key: "" for key in doc.metadata})
+        reader = PdfReader(str(path))
+        writer = PdfWriter()
+
+        for page in reader.pages:
+            writer.add_page(page)
+
+        writer.add_metadata({})  # Clear metadata
+
         temp_path = path.with_suffix(".tmp.pdf")
-        doc.save(temp_path, garbage=4)
-        doc.close()
+        with open(temp_path, "wb") as f:
+            writer.write(f)
+
         os.replace(temp_path, path)
         logger.info(f"📄 PDF scrubbed: {file_path}")
     except Exception as e:
@@ -56,3 +61,34 @@ def scrub(file_path: str) -> None:
 
     if not path.exists() or path.stat().st_size == 0:
         raise RuntimeError(f"Scrubbed PDF file missing or empty: {file_path}")
+
+
+def get_additional_messages(file_path: str) -> List[str]:
+    """
+    Scans PDF for potential PII content and builds warning messages.
+
+    Returns:
+        List[str]: List of formatted warning messages (if any).
+    """
+    messages = []
+    triggered = set()
+
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                text = page.extract_text()
+                if not text:
+                    continue
+
+                for pii_type, pattern in PII_PATTERNS.items():
+                    if pii_type in triggered:
+                        continue
+                    if pattern.search(text):
+                        messages.append(
+                            f"🕵️ Possible PII signal in {Path(file_path).name}: “{pii_type}” found"
+                        )
+                        triggered.add(pii_type)
+    except Exception as e:
+        logger.warning(f"⚠️ Could not scan for PII in {file_path}: {e}")
+
+    return messages
