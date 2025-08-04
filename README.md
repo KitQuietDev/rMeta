@@ -84,6 +84,9 @@ The testing/ directory contains sample files and scripts used during development
 
 > Real-time feedback, smart messaging, and file-level status reporting – all in one lightweight interface.
 
+# 📜 License Compliance
+rMeta honors open-source licenses and provides full attribution for all third-party libraries used. For details, see THIRD_PARTY.md.
+
 # 🌱 Want to Contribute?
 
 We’re modular. Every file type gets its own handler — and if you're adding a new one, there are patterns you can follow to make it clean, testable, and user-friendly.
