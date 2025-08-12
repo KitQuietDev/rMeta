@@ -1,36 +1,25 @@
 services:
   rmeta:
-    build: .
+    image: ghcr.io/kitquietdev/rmeta:latest
     container_name: rmeta
-
-    # 🔌 Map internal port to host machine (from .env)
     ports:
-      - "${FLASK_PORT}:${FLASK_PORT}"
-
-    # 🔐 Load environment variables (e.g., session timeout, debug mode)
-    env_file:
-      - .env
-
-    # 🗃️ Mount persistent or shared volumes
+      - "${FLASK_PORT:-8574}:${FLASK_PORT:-8574}"
+    environment:
+      - FLASK_ENV=production
+      - SESSION_TIMEOUT=${SESSION_TIMEOUT:-600}
+      - FLASK_PORT=${FLASK_PORT:-8574}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SESSIONS_ROOT=/app/uploads
+      - ALLOW_HASH=${ALLOW_HASH:-true}
+      - ALLOW_GPG=${ALLOW_GPG:-true}
     volumes:
-      # Optional: persists output files (if used outside /tmp)
       - ./uploads:/app/uploads
-      # Optional: read-only GPG key directory for encryption
       - ./keys:/app/keys:ro
-      # Dev mode: mount full project source (for live editing)
-      - .:/app
-
-    # 🔄 Automatically restart unless manually stopped
+    command: gunicorn 'renderer:create_wsgi_app()' --bind 0.0.0.0:${FLASK_PORT:-8574} --workers=2 --timeout=120 --keep-alive=2 --max-requests=1000 --max-requests-jitter=50
     restart: unless-stopped
-
-    # 🧼 Optional: clean up container after stop (useful for dev)
-    # remove this line for persistent containers
-    # tmpfs:
-    #   - /tmp/rMeta
-
-    # 🐳 Optional: set logging driver or resource limits
-    # logging:
-    #   driver: "json-file"
-    #   options:
-    #     max-size: "10m"
-    #     max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${FLASK_PORT:-8574}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

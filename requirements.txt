@@ -2,11 +2,22 @@
 Flask
 
 # Metadata stripping libraries
-piexif         # For JPEG/Exif metadata removal
-PyMuPDF        # For PDF parsing and cleaning
-python-docx    # For DOCX (Word) file support
-openpyxl       # For XLSX (Excel) support
+piexif           # JPEG/Exif metadata removal
+python-docx      # DOCX (Word) file support
+nometa           # XLSX (Excel) support
+pyheif           # HEIC parsing
+pillow_heif      # HEIC decoding for Pillow
+Pillow           # Image processing
+pdfplumber       # PDF PII inspection
+pypdf2           # PDF metadata removal
+openpyxl         # Excel file handling
 
 # Flask dependencies and helpers
-werkzeug       # File handling & request helpers
-python-dotenv  # Load environment variables from .env
+werkzeug         # File handling & request helpers
+python-dotenv    # Load environment variables from .env
+psutil           # System memory checks before accepting uploads
+aiofiles         # Async file I/O
+
+# Removed due to license incompatibility
+# PyMuPDF        # PDF parsing and cleaning
+gunicorn>=21.2.0
