@@ -1,0 +1,15 @@
+services:
+  rmeta:
+    build: .
+    container_name: rmeta-dev
+    ports:
+      - "8574:8574"
+    volumes:
+      - .:/app
+      - ./uploads:/app/uploads
+      - ./keys:/app/keys
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - FLASK_PORT=${FLASK_RUN_PORT}
+    command: flask run --reload --host=0.0.0.0

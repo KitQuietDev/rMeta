@@ -1,5 +1,0 @@
-# .flake8
-[flake8]
-exclude = .venv, __pycache__, uploads, docs
-max-line-length = 120
-ignore = E302, E305, E501, F403
