@@ -1,134 +1,142 @@
-# 🧼 rMeta
+# rMeta v0.3.0 — Clean Your Files, Keep Your Privacy
 
-**rMeta** is your local-first tool for cleaning metadata from sensitive files—no cloud, no tracking, no leaks. Run it entirely on your machine and take full control over digital hygiene.
+rMeta is a local-only file metadata scrubber that's fast, secure, and doesn't send your data anywhere **EVER**. Whether you're a journalist, lawyer, researcher, or just someone who wants to keep sensitive files clean, rMeta gives you full control over your privacy.
 
-📁 Just drag and drop files into the browser to get scrubbed versions back. Optionally add hashing or GPG encryption on your terms.
-## 🔍 Who’s It For?
+## Overview
 
-rMeta is made for:
+rMeta removes metadata from sensitive files without sending anything over the network. It runs entirely on your machine, inside Docker, and automatically manages its workspace for safety.
 
-- 🕵️ Journalists and whistleblowers  
-- 🔐 Privacy advocates  
-- 🛡️ Security professionals  
-- 👤 Anyone who wants true digital autonomy
+You drag a file in, rMeta strips away the noise, and you get a clean version out. No snooping, no nonsense.
 
-It’s modular, extensible, and easy to tailor via its handler-based architecture.
-## ✅ What File Types Are Supported?
+- Don't have javascript?  Cool - rMeta only uses it for theme switching.  
 
-Out of the box:
+- SHA256 hashfile generation
 
-- **JPEG** — EXIF wiped via Pillow  
-- **PDF** — Metadata scrubbed via PyMuPDF  
-- **DOCX** — Author/history removed via python-docx  
-- **XLSX** — Cleanup via openpyxl
+- Optional GPG public key encryption
 
-Want more? Just drop a custom module into `handlers/`.
-## 🔐 Optional Add-ons
+- Temporary workspace auto-cleans
+  
+- **Never** phones home
 
-Post-processing extras you can toggle in the UI:
+## Why Should We Care?
 
-- ✅ **SHA256 Hashes** — `.sha256.txt` verification file  
-- ✅ **GPG Encryption** — encrypt files using your own public key (must be uploaded)
-## 🧩 Extending rMeta
+This project started when we couldn't find a sole-source piece of kit that could handle multiple filetypes, cost nothing (really), and make us feel comfortable about sharing sensitive files.
 
-Want to add support for more file types (e.g., PNG, MP4, SVG)?
+We set out to create something:
 
-1. Create a new module in `handlers/` following the examples inside.
-2. Register it in `app.py` by importing it and adding to the supported types.
-3. Rebuild the Docker container so the changes apply:
+- **Durable.**  The app's architecture separates concerns, handles validation, and uses ephemeral working directories.
+- **Customizable.**  We don't handle files you want?  Write your own handler!
+- **Fast.** Asynchronous architecture means rMeta handles multiple files simultaneously - even if there are errors.
+- **Smart.** We made sure rMeta does its best to *elegantly* fail while also providing warnings, messages, and logpoints - all accessible by you.
+- **Private.** It will **never** send your data anywhere.  Everything is stored in a temporary workspace.  You have full control.
+- **Secure.** rMeta can generate SHA256 hashfiles AND use your GPG public key to encrypt files at runtime.
 
-```bash
-docker-compose build
-docker-compose up
-```
-🛠️ You must rebuild the container (with ```docker-compose up --build```)any time you change backend Python code or add files (like handlers or postprocessors).
-Changes to **.html, .js, or .css** files **do not** require a rebuild — just refresh your browser.
-## ✨ Features At-A-Glance
+## 🗂️ Supported File Types
 
-- 🧼 Local-first processing  
-- 🖥️ Browser-based UI  
-- 🔌 Modular architecture (easy to extend)  
-- 🔒 Optional hashing + GPG encryption  
-- 🧹 Temporary files are deleted after download  
-- 🎨 Light/dark/system theme toggle  
-- 🐳 Dockerized for clean deploy  
-- ⚙️ `.env` config for ports and tweaks
-## 🚀 Get Started
+- JPEG — In-place metadata scrub
 
-Build and run with Docker:
+- PDF — Metadata library cleanup
+
+- DOCX — XML-safe stripping
+
+- XLSX — Tag-based metadata removal
+
+- HEIC — Converts to JPEG + scrubs
+
+- TXT / CSV — Minimal metadata check
+
+## Getting Started
+
+Choose the setup that fits your needs. All options run rMeta locally and keep your files private.
+
+### 🟢 Option 1: Quick and Dirty — `docker run`
+
+Fastest way to get started. No setup, no config—just run it:
 
 ```bash
-docker build -t rMeta .
-docker run -p 8574:8574 rMeta
-```
+docker run -d \ --name rmeta \ --rm \ -p 8574:8574 \ ghcr.io/kitquietdev/rmeta:latest
+ ```
+This runs the latest published image in production mode. No volumes, no persistence.
 
-Or fire it up with Docker Compose:
+### 🟡 Option 2: Compose It Right — Using `docker-compose.yml`
+
+More structured. Gives you control over config, ports, volumes, environment variables, etc.
 
 ```bash
-docker-compose up --build
+mkdir rmeta && cd rmeta
+curl -O https://raw.githubusercontent.com/kitquietdev/rMeta/main/docker-compose.yml
+docker compose up -d
 ```
 
-Open your browser to:
+This uses Gunicorn and production settings. Workspace is managed inside the container.
 
+### 🟣 Option 3: Clone + Run — Use the Codebase Directly
+
+If you want the source alongside your container for development, customization, or contributions.
+
+```bash
+git clone https://github.com/KitQuietDev/rMeta.git
+cd rMeta
+cp docker-compose.yml.example docker-compose.yml
+docker compose up
 ```
-http://localhost:8574
-```
-## 📦 Project Structure
+This runs rMeta in development mode with hot reload and mounted volumes. 
 
-```
-rMeta/
-├── app.py              # Main Flask backend
-├── handlers/           # File scrubbers per format
-├── postprocessors/     # Hashing, encryption
-├── static/             # CSS & JS
-├── templates/          # Browser interface
-├── Dockerfile          # Build recipe
-├── docker-compose.yml  # Container orchestration
-├── .env                # Runtime config
-└── requirements.txt    # Python dependencies
-```
-## 🛡️ Privacy-First Philosophy
+*Edit the fresh `docker-compose.yml` as needed for your local dev environment.
 
-- ✅ Nothing ever leaves your machine  
-- ✅ No analytics, no trackers  
-- ✅ Temp files wiped after download  
-- ✅ Encryption is optional and fully local
-## 📈 Roadmap
+### **Do not expose this setup to the internet.**
+## ⚠️ Security Warning
 
-Coming soon:
+rMeta is designed to run locally. Development mode (flask run) is not hardened and should never be exposed to the internet.
 
-- [ ] PNG, video, and audio support  
-- [ ] Smarter GPG key validation  
-- [ ] One-click file wiping  
-- [ ] Batch downloads  
-- [ ] Scrubbing presets (light, aggressive, etc.)
-## 📋 Dependencies
+- Dev mode lacks production-grade request handling
 
-Docker image bundles:
+- It does not sanitize headers or enforce TLS
 
-- Python 3.9+  
-- Flask  
-- Pillow  
-- PyMuPDF (fitz)  
-- python-docx  
-- openpyxl  
-- Optional: `gpg` installed for encryption
-## 📝 License
+- It is intended for local testing only
 
-MIT—fork it, remix it, ship it. Just give credit.
-## 🤝 Contributions
+**If you choose to expose rMeta publicly (e.g., via reverse proxy, tunnel, or port forwarding), you are responsible for securing that setup. Future versions will include proxy-awareness and optional TLS support, but v0.3.0 does not.**
 
-PRs, issues, suggestions—all welcome.
+## Architecture Overview
 
-Have an idea for a new handler or feature? Drop a line or send a pull request.
-## 💬 Maintainer
+- `flask_renderer.py` — Entry point for the app
 
-Created by [KitQuietDev](https://github.com/KitQuietDev)
+- `handlers/` — File-type-specific logic
 
-## 📸 Screenshots
+- `postprocessors/` — Optional encryption, hashing, etc.
 
-### Upload Interface
-![Upload interface](docs/images/screenshot_start.png)
+- `uploads/` — Temporary workspace (auto-managed)
 
-### After Processing (with hash generation)
-![After processing](docs/images/screenshot_result.png)
+## 🧪 Internal Testing Artifacts
+
+The `dev/` directory contains sample files and scripts used during development. It’s not meant to enforce a test suite — it’s there to illustrate what rMeta was validated against. These assets can help you explore edge cases or understand scrubbing logic in context.
+
+![rMeta UI](docs/images/screenshot.png)
+
+Real-time feedback, smart messaging, and file-level status reporting – all in one lightweight interface.
+
+## 🐳 Docker Compose Files
+File	Purpose
+- `docker-compose.yml`	Production mode using Gunicorn
+- `docker-compose.yml.example`	Development mode with hot reload and mounted volumes
+
+## 📜 License Compliance
+
+rMeta honors all third-party licenses. See [`THIRD_PARTY.md`](THIRD_PARTY.md) for full attribution.
+
+## Contributing
+
+Want to add support for a new file type? Improve the UI? Suggest a feature? We welcome contributions of all kinds. Modular architecture makes it easy to plug in new logic.
+
+We'd love to have you on but we ask you to maintain the ethos and stay consistent with our novice-friendly/expert-aware goals.  To do so, please see
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+
+- [Our Contributor's Guide](docs/CONTRIBUTING.md)
+
+- [Our Documentation Guidelines](docs/DOCUMENTATION_GUIDELINES.md)
+
+- [Developer's Greeting and Guide](docs/DEVELOPERS.md)
+
+## Changes and versioning
+
+This README describes the current state of rMeta. For version history and detailed changes, see [`CHANGELOG.md`](changelog.md).

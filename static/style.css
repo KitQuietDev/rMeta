@@ -1,14 +1,12 @@
 /* 🎨 GLOBAL STYLES */
 body {
   font-family: sans-serif;
-  margin: 0;
+  margin: 0 auto;
   padding: 2rem;
   background-color: #f9f9f9;
   color: #111;
-  transition: background-color 0.3s, color 0.3s; /* smooth theme transitions */
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto; /* centers page horizontally */
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* 🧭 Headings */
@@ -26,7 +24,22 @@ form {
   background-color: #eee;
   padding: 1rem;
   border-radius: 0.5rem;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, opacity 0.3s;
+}
+
+/* ✋ Disabled form state */
+form.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  position: relative;
+}
+
+form.disabled::after {
+  content: "🔒 Session in progress...";
+  position: absolute;
+  bottom: -2rem;
+  font-size: 0.9rem;
+  color: #999;
 }
 
 /* 📂 File input and submit button styles */
@@ -50,7 +63,7 @@ li {
 
 a {
   text-decoration: none;
-  color: #007BFF; /* classic blue link */
+  color: #007BFF;
 }
 
 /* 🌗 Theme toggle button position */
@@ -62,6 +75,17 @@ a {
   background: none;
   font-size: 1.5rem;
   cursor: pointer;
+}
+
+/* 📊 Progress bar animation (works without JS) */
+@keyframes pulse {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-bar {
+  animation: pulse 2s ease-in-out infinite;
 }
 
 /* 🌑 DARK MODE OVERRIDES */
@@ -82,7 +106,15 @@ a {
 }
 
 .dark-mode a {
-  color: #66baff; /* softer, cooler link color for dark bg */
+  color: #66baff;
+}
+
+.dark-mode #progressIndicator div[style*="background: #f5f5f5"] {
+  background: #2a2a2a !important;
+}
+
+.dark-mode #progressIndicator div[style*="background: #e0e0e0"] {
+  background: #444 !important;
 }
 
 /* 📦 Drag-and-drop zone */
@@ -99,7 +131,6 @@ a {
   border-color: #66f;
 }
 
-/* 🔲 Drop zone (dark mode overrides) */
 .dark-mode .drop-zone {
   border-color: #555;
   background-color: #1e1e1e;
@@ -108,4 +139,17 @@ a {
 .dark-mode .drop-zone.drag-over {
   background-color: #333;
   border-color: #88f;
+}
+
+/* 🔔 Status messages */
+.messages {
+  margin-top: 1.5rem;
+}
+
+.messages ul {
+  padding-left: 1rem;
+}
+
+.messages li strong {
+  color: darkorange;
 }

@@ -38,7 +38,9 @@ uploads/
 *~
 .venv/
 
+# Local development overrides
+docker-compose.dev.yml
+
 #My files - KEEP OUT - DANGER DANGER DANGER
-/dev/
 /backups/
 /sandbox/
