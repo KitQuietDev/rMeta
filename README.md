@@ -1,4 +1,4 @@
-# rMeta v0.3.0 — Clean Your Files, Keep Your Privacy
+# rMeta v0.3.1 — Clean Your Files, Keep Your Privacy
 
 rMeta is a local-only file metadata scrubber that's fast, secure, and doesn't send your data anywhere **EVER**. Whether you're a journalist, lawyer, researcher, or just someone who wants to keep sensitive files clean, rMeta gives you full control over your privacy.
 
