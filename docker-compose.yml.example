@@ -11,5 +11,5 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
-      - FLASK_PORT=${FLASK_RUN_PORT}
+      - FLASK_RUN_PORT=${FLASK_RUN_PORT}
     command: flask run --reload --host=0.0.0.0

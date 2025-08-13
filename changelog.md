@@ -3,6 +3,12 @@
 All notable changes to this project will be documented here.  
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.1] - 2025-08-11
+
+### Added
+- Rebuilt internal workflow for github actions
+
+
 ## [0.3.0] - 2025-08-10
 
 ### Breaking
