@@ -23,7 +23,7 @@ class FlaskRenderer:
         self.app.secret_key = secret_key or secrets.token_urlsafe(32)
 
         self.config = config
-        self.port = config.get("FLASK_PORT", 8574)
+        self.port = config.get("FLASK_RUN_PORT", 8574)
 
         # Apply config to Flask app
         for key, value in config.items():

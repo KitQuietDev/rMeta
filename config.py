@@ -19,7 +19,7 @@ def load_config():
     
     config = {
         "SESSION_TIMEOUT": int(os.getenv("SESSION_TIMEOUT", 600)),
-        "FLASK_PORT": int(os.getenv("FLASK_PORT", 8574)),
+        "FLASK_RUN_PORT": int(os.getenv("FLASK_RUN_PORT", 8574)),
         "LOG_LEVEL": os.getenv("LOG_LEVEL", "INFO"),
         "UPLOAD_FOLDER": os.getenv("UPLOAD_FOLDER", "uploads"),
         "SESSIONS_ROOT": os.getenv("SESSIONS_ROOT", "uploads"),
