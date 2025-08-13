@@ -2,9 +2,6 @@
 
 from .flask_renderer import FlaskRenderer
 
-def get_wsgi_app(self):
-    return self.app
-
 def load_renderer(config):
     """
     Load and return the appropriate renderer based on config.

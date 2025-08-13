@@ -5,6 +5,8 @@ from config import load_config
 from renderer import load_renderer
 from routes.upload import register_upload_routes
 from routes.download import register_download_routes
+from utils.chunking import audit_files, chunk_files_by_size, process_chunks
+from utils.system import get_available_memory_mb
 
 def create_app():
     """
