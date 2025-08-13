@@ -3,6 +3,18 @@
 All notable changes to this project will be documented here.  
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.2] - 2025-08-11
+
+### Changed
+- Refactored `safeguards.py` into `system.py` for improved modularity and clarity.
+- Introduced chunking logic to enhance fault tolerance during processing.  See `chunking.py` in `utils/` directory.
+
+### Fixed
+- Resolved oversight where `safeguards.py` was not properly wired into execution flow.
+
+### Docs
+- Updated README to reflect new module structure and usage.
+
 ## [0.3.1] - 2025-08-11
 
 ### Added
