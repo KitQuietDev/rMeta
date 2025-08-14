@@ -1,5 +1,4 @@
 stages:
-  - test
   - secret-detection
   - build
   - push
@@ -12,12 +11,13 @@ variables:
 include:
   - template: Security/Secret-Detection.gitlab-ci.yml
 
-before_script:
-  - echo "$DOCKERHUB_PAT" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-
 build_image:
   stage: build
+  image: docker:latest
+  services:
+    - docker:dind
   script:
+    - echo "$DOCKERHUB_PAT" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
     - |
       if [[ "$CI_COMMIT_TAG" =~ ^v.* ]]; then
         export VERSION="${CI_COMMIT_TAG}"
@@ -27,7 +27,11 @@ build_image:
 
 push_image:
   stage: push
+  image: docker:latest
+  services:
+    - docker:dind
   script:
+    - echo "$DOCKERHUB_PAT" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
     - docker push kitquietdev/rmeta:${VERSION}
     - docker push kitquietdev/rmeta:latest
   only:
