@@ -111,7 +111,8 @@ rMeta is designed to run locally. Development mode (flask run) is not hardened a
 
 The `dev/` directory contains sample files and scripts used during development. It’s not meant to enforce a test suite — it’s there to illustrate what rMeta was validated against. These assets can help you explore edge cases or understand scrubbing logic in context.
 
-![rMeta UI](docs/images/screenshot.png)
+![rMeta UI](https://gitlab.com/kitquietdev/rmeta/-/raw/main/docs/images/screenshot.png)
+
 
 Real-time feedback, smart messaging, and file-level status reporting – all in one lightweight interface.
 
