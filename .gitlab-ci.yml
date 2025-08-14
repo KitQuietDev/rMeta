@@ -41,6 +41,7 @@ update_dockerhub_readme:
   stage: deploy
   image: curlimages/curl:latest
   script:
+    - apk add --no-cache jq
     - |
       DESCRIPTION=$(awk '{printf "%s\\n", $0}' README.md)
       PAYLOAD="{\"full_description\": \"$DESCRIPTION\"}"
@@ -57,3 +58,4 @@ update_dockerhub_readme:
         -d "$PAYLOAD"
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
+
