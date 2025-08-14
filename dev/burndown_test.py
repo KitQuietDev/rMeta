@@ -27,7 +27,7 @@ def create_docx():
     path = OUT_DIR / "dirty.docx"
     doc = Document()
     doc.add_paragraph("Author: MetaWriter\nSSN: 000-00-0000")
-    doc.save(path)
+    doc.save(path) # type: ignore
 
 def create_pdf():
     path = OUT_DIR / "dirty.pdf"
@@ -46,11 +46,11 @@ def create_xlsx():
     path = OUT_DIR / "dirty.xlsx"
     wb = Workbook()
     ws = wb.active
-    ws.title = "MetaSheet"
-    ws['A1'] = "Name"
-    ws['B1'] = "Email"
-    ws['A2'] = "Rick"
-    ws['B2'] = "rick@example.com"
+    ws.title = "MetaSheet" # type: ignore
+    ws['A1'] = "Name" # type: ignore
+    ws['B1'] = "Email" # type: ignore
+    ws['A2'] = "Rick" # type: ignore
+    ws['B2'] = "rick@example.com" # type: ignore
     wb.save(path)
 
 def create_jpg():
@@ -62,7 +62,6 @@ def create_jpg():
     img.save(path, exif=exif_bytes)
 
 def create_heic():
-    # This one will be skipped unless pyheif + converter are installed
     pass
 
 def zip_payload():
