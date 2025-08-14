@@ -1,4 +1,4 @@
-# rMeta v0.3.1 — Clean Your Files, Keep Your Privacy
+# rMeta v0.3.2 — Clean Your Files, Keep Your Privacy
 
 rMeta is a local-only file metadata scrubber that's fast, secure, and doesn't send your data anywhere **EVER**. Whether you're a journalist, lawyer, researcher, or just someone who wants to keep sensitive files clean, rMeta gives you full control over your privacy.
 
@@ -54,9 +54,9 @@ Choose the setup that fits your needs. All options run rMeta locally and keep yo
 Fastest way to get started. No setup, no config—just run it:
 
 ```bash
-docker run -d \ --name rmeta \ --rm \ -p 8574:8574 \ ghcr.io/kitquietdev/rmeta:latest
+docker run --rm -d -p 8574:8574 kitquietdev/rmeta:latest
  ```
-This runs the latest published image in production mode. No volumes, no persistence.
+_This runs the latest published image on Docker Hub in production mode. No volumes, no persistence. No GitHub account required._
 
 ### 🟡 Option 2: Compose It Right — Using `docker-compose.yml`
 
@@ -64,23 +64,23 @@ More structured. Gives you control over config, ports, volumes, environment vari
 
 ```bash
 mkdir rmeta && cd rmeta
-curl -O https://raw.githubusercontent.com/kitquietdev/rMeta/main/docker-compose.yml
+curl -O https://gitlab.com/kitquietdev/rMeta/-/raw/main/docker-compose.yml
 docker compose up -d
 ```
 
-This uses Gunicorn and production settings. Workspace is managed inside the container.
+_This uses Gunicorn and production settings. Workspace is managed inside the container._
 
 ### 🟣 Option 3: Clone + Run — Use the Codebase Directly
 
 If you want the source alongside your container for development, customization, or contributions.
 
 ```bash
-git clone https://github.com/KitQuietDev/rMeta.git
+git clone https://gitlab.com/kitquietdev/rMeta.git
 cd rMeta
 cp docker-compose.yml.example docker-compose.yml
 docker compose up
 ```
-This runs rMeta in development mode with hot reload and mounted volumes. 
+_This runs rMeta in development mode with hot reload and mounted volumes._
 
 *Edit the fresh `docker-compose.yml` as needed for your local dev environment.
 

@@ -37,9 +37,11 @@ async def scrub(file_path: str) -> None:
 
     async def scrub_heic():
         heif_file = pillow_heif.read_heif(file_path)
+        if heif_file.data is None:
+            raise ValueError(f"HEIC file data is missing: {file_path}")
         image = Image.frombytes(heif_file.mode, heif_file.size, heif_file.data)
         temp_path = path.with_suffix(".tmp.heic")
-        pillow_heif.write_heif(image, temp_path, save_exif=False, quality=95)
+        image.save(temp_path, format="HEIF", exif=None, quality=95)
         os.replace(temp_path, path)
         logger.info(f"🖼️ HEIC scrubbed: {file_path}")
 

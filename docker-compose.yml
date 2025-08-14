@@ -1,6 +1,6 @@
 services:
   rmeta:
-    image: ghcr.io/kitquietdev/rmeta:latest
+    image: kitquietdev/rmeta:latest
     container_name: rmeta
     ports:
       - "${FLASK_RUN_PORT:-8574}:${FLASK_RUN_PORT:-8574}"
