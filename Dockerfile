@@ -1,6 +1,6 @@
 # Dockerfile
 
-FROM python:3.11-slim
+FROM python:12-slim
 WORKDIR /app
 
 ENV PYTHONPATH=/app
