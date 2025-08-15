@@ -1,17 +1,10 @@
-<!-- templates/index.html -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="color-scheme" content="light dark">
   <title>rMeta</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <script>
-    // Prevent form resubmission on refresh
-    if (window.history.replaceState) {
-      window.history.replaceState(null, null, window.location.href);
-    }
-  </script>
 </head>
 <body>
 
@@ -24,34 +17,34 @@
   <h2>Upload files to remove metadata</h2>
 
   <!-- 🧼 Upload form -->
-  <form id="uploadForm" method="post" enctype="multipart/form-data" action="{{ url_for('upload.upload_file') }}">
-    
-    <!-- 📂 Drag-and-drop zone -->
-    <div id="dropZone" class="drop-zone">
+  <form method="post" enctype="multipart/form-data" action="{{ url_for('upload.upload_file') }}" id="upload-form">
+    <label for="file-upload" class="drop-zone" id="drop-zone">
       <p>Drag & drop files here or click to select</p>
-      <input type="file" name="file" multiple accept=".jpg,.jpeg,.png,.heic,.pdf,.docx,.xlsx,.csv,.txt">
-    </div>
-    <br>
+      <input type="file" id="file-upload" name="file" multiple accept=".jpg,.jpeg,.png,.heic,.pdf,.docx,.xlsx,.csv,.txt">
+    </label>
 
-    <!-- ⚠️ Smart format warning (HEIC-specific) -->
-    <div id="heicWarning" style="display:none; color: #b8860b; font-weight: bold; margin-bottom: 0.5em;">
-      ⚠️ HEIC images will be converted to JPEG format during metadata scrub. This may affect transparency or quality.
-    </div>
-
-    <!-- 🧮 Optional postprocessors -->
     <label><input type="checkbox" name="generate_hash"> Generate hash (.sha256.txt)</label><br>
     <label><input type="checkbox" name="encrypt_file"> Encrypt output with GPG</label><br>
-    
-    <!-- 🔐 GPG key input -->
+
     <label>
       Public GPG key (.asc or .gpg): 
       <input type="file" name="gpg_key" accept=".asc,.gpg">
     </label><br>
 
-    <input type="submit" id="submitBtn" value="Upload">
+    <input type="submit" value="Upload">
+  </form>
 
-    <!-- 🔐 GPG key required warning -->
-    <p id="gpgWarning" style="color: red; display: none;">⚠️ GPG encryption requires a key file.</p>
+  <!-- 🧼 Memory Clean Button -->
+  <form method="POST" action="{{ url_for('session_clean.clean_memory') }}" id="clean-form">
+    <button
+      type="submit"
+      class="clean-btn"
+      id="clean-memory-btn"
+      title="Removes temporary session data"
+    >
+      <span id="clean-btn-text">Checking...</span>
+    </button>
+    <div class="tooltip">Removes temporary session data</div>
   </form>
 
   <!-- 📜 Status messages -->
@@ -60,7 +53,7 @@
       <ul>
       {% for msg in messages %}
         {% if "⚠️" in msg %}
-          <li style="color: darkorange;"><strong>{{ msg }}</strong></li>
+          <li><strong>{{ msg }}</strong></li>
         {% else %}
           <li>{{ msg }}</li>
         {% endif %}
@@ -69,118 +62,164 @@
     </div>
   {% endif %}
 
-  <!-- 📥 Download links -->
-  {% if session and files %}
-    <h3>Cleaned Files:</h3>
-    <ul>
-    {% for file in files %}
-      <li><a href="{{ url_for('download.download_file', session=session, filename=file) }}">{{ file }}</a></li>
-    {% endfor %}
-    </ul>
+  <!-- 📊 File Processing Summary -->
+  {% if files %}
+    <h3>File Processing Summary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Warnings</th>
+            <th>Metadata Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for file in files %}
+            <tr>
+              <td>{{ file.filename }}</td>
+            <td>
+              {% set has_flagged = false %}
+              <ul>
+                {% for warn in file.warnings %}
+                  {% if "⚠️" in warn %}
+                    {% set has_flagged = true %}
+                    <li>{{ warn }}</li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+              {% if not has_flagged %}
+                —
+              {% endif %}
+            </td>
+              <td>
+                {% if file.metadata_msg and "Metadata stripped" in file.metadata_msg %}
+                  ✅ Pass
+                {% else %}
+                  ❌ Fail
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    <!-- 📥 Download Summary -->
+    <h3>Download Summary</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Download</th>
+          <th>SHA256 Hash</th>
+          <th>Encrypted?</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+          <tr>
+            <td>
+              <a href="{{ url_for('download.download_file', session=session, filename=file.filename) }}">
+                {{ file.filename }}
+              </a>
+            </td>
+            <td>
+              {% if file.hash_file %}
+                <a href="{{ url_for('download.download_file', session=session, filename=file.hash_file) }}">
+                  {{ file.hash_file }}
+                </a>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>{{ "✅" if file.encrypted else "❌" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   {% endif %}
 
-  <!-- 🧠 Scripts -->
-  <script src="{{ url_for('static', filename='theme-toggle.js') }}"></script>
-
   <script>
-    // Non-JS fallback progress indicator with slight delay to be visible
-    function showProgress() {
-      const progressDiv = document.getElementById('progressIndicator');
-      const form = document.getElementById('uploadForm');
-      const submitBtn = document.getElementById('submitBtn');
-      
-      if (progressDiv && form) {
-        progressDiv.style.display = 'block';
-        form.style.opacity = '0.7';
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.value = '🔄 Processing...';
-        }
-      }
-      
-      // Force a small delay so progress shows even for fast operations
-      setTimeout(() => {
-        // This ensures the progress bar is visible for at least 500ms
-      }, 500);
-      
-      return true; // Allow form submission to continue
+    // File drop zone handling
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-upload');
+    const cleanBtn = document.getElementById('clean-memory-btn');
+    const cleanBtnText = document.getElementById('clean-btn-text');
+    const uploadForm = document.getElementById('upload-form');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      fileInput.files = e.dataTransfer.files;
+      // Trigger status update after file selection
+      setTimeout(updateButtonStatus, 100);
+    });
+
+    // Update button when files are selected
+    fileInput.addEventListener('change', () => {
+      setTimeout(updateButtonStatus, 100);
+    });
+
+    // Function to update clean button status
+    function updateButtonStatus() {
+      fetch('{{ url_for("session_clean.check_status") }}', {
+        method: 'GET',
+        cache: 'no-cache'
+      })
+      .then(response => response.json())
+      .then(data => {
+        const hasDirtyData = data.has_dirty_data;
+        
+        // Update button appearance
+        cleanBtn.className = 'clean-btn ' + (hasDirtyData ? 'dirty' : 'clean disabled');
+        cleanBtn.disabled = !hasDirtyData;
+        cleanBtnText.textContent = hasDirtyData ? 'Clean Memory' : 'Memory Clean';
+        
+        console.log('Button status updated:', hasDirtyData ? 'dirty' : 'clean');
+      })
+      .catch(error => {
+        console.error('Error checking status:', error);
+        // Fallback to assuming dirty
+        cleanBtn.className = 'clean-btn dirty';
+        cleanBtn.disabled = false;
+        cleanBtnText.textContent = 'Clean Memory';
+      });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const gpgCheckbox = document.querySelector('input[name="encrypt_file"]');
-      const gpgKeyInput = document.querySelector('input[name="gpg_key"]');
-      const submitBtn = document.getElementById('submitBtn');
-      const gpgWarning = document.getElementById('gpgWarning');
-      const heicWarning = document.getElementById('heicWarning');
-      const fileInput = document.querySelector('input[name="file"]');
+    // Update status on page load
+    document.addEventListener('DOMContentLoaded', updateButtonStatus);
 
-      // 🧠 GPG key validation logic
-      function updateSubmitState() {
-        const gpgEnabled = gpgCheckbox.checked;
-        const gpgKeyAttached = gpgKeyInput.files.length > 0;
+    // Update status periodically (every 10 seconds)
+    setInterval(updateButtonStatus, 10000);
 
-        if (gpgEnabled && !gpgKeyAttached) {
-          submitBtn.disabled = true;
-          submitBtn.value = "🔐 GPG key required";
-          gpgWarning.style.display = 'block';
-        } else {
-          submitBtn.disabled = false;
-          submitBtn.value = gpgEnabled ? "Encrypt & Upload" : "Upload";
-          gpgWarning.style.display = 'none';
-        }
+    // Update status after upload form submission
+    uploadForm.addEventListener('submit', () => {
+      // Small delay to let the upload process
+      setTimeout(updateButtonStatus, 1000);
+    });
+
+    // Handle form submission (page refresh detection)
+    window.addEventListener('beforeunload', () => {
+      // This triggers server-side session cleanup on page refresh
+      navigator.sendBeacon('{{ url_for("session_clean.check_status") }}');
+    });
+
+    // Update button status when page becomes visible again
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        updateButtonStatus();
       }
-
-      gpgCheckbox.addEventListener('change', updateSubmitState);
-      gpgKeyInput.addEventListener('change', updateSubmitState);
-      updateSubmitState();
-
-      // 🧠 HEIC detection logic
-      fileInput.addEventListener('change', () => {
-        let showHeic = false;
-        for (const file of fileInput.files) {
-          if (file.name.toLowerCase().endsWith(".heic")) {
-            showHeic = true;
-            break;
-          }
-        }
-        heicWarning.style.display = showHeic ? 'block' : 'none';
-      });
-
-      // 📦 Drag & Drop support
-      const dropZone = document.getElementById('dropZone');
-
-      dropZone.addEventListener('click', () => fileInput.click());
-
-      ['dragenter', 'dragover'].forEach(event =>
-        dropZone.addEventListener(event, e => {
-          e.preventDefault();
-          dropZone.classList.add('drag-over');
-        })
-      );
-
-      ['dragleave', 'drop'].forEach(event =>
-        dropZone.addEventListener(event, e => {
-          e.preventDefault();
-          dropZone.classList.remove('drag-over');
-        })
-      );
-
-      dropZone.addEventListener('drop', e => {
-        e.preventDefault();
-        if (e.dataTransfer.files.length) {
-          fileInput.files = e.dataTransfer.files;
-
-          let showHeic = false;
-          for (const file of e.dataTransfer.files) {
-            if (file.name.toLowerCase().endsWith(".heic")) {
-              showHeic = true;
-              break;
-            }
-          }
-          heicWarning.style.display = showHeic ? 'block' : 'none';
-        }
-      });
     });
   </script>
+
 </body>
 </html>
