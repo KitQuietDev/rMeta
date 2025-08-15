@@ -3,11 +3,28 @@
 All notable changes to this project will be documented here.  
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.4.0] - 2025-08-15
+
+### Added
+- Session isolation logic: upload route now purges stale data only when new files are detected.
+- Directory watchdog loop (10s interval) to monitor upload state and trigger UI updates.
+- Hostile payload generator (`meta_dirty_bundle`) for synthetic PII testing across supported formats.
+- GitLab CI pipeline for DockerHub and GHCR image publishing.
+
+### Changed
+- UI button behavior now reflects directory cleanup without requiring user interaction.
+- CI/CD strategy migrated to GitLab; GitHub remains active but no longer trusted for publishing.
+- Improved UI layout: transitioned from a linear list format to organized tables for clearer presentation and easier navigation.
+
+### Fixed
+- Read-only file handling in scrubber; metadata removal now proceeds without error.
+- Mixed batch upload handling; consistent working directory maintained across sessions.
+
 ## [0.3.2] - 2025-08-11
 
 ### Changed
 - Refactored `safeguards.py` into `system.py` for improved modularity and clarity.
-- Introduced chunking logic to enhance fault tolerance during processing.  See `chunking.py` in `utils/` directory.
+- Introduced chunking logic to enhance fault tolerance during processing. See `chunking.py` in the `utils/` directory.
 
 ### Fixed
 - Resolved oversight where `safeguards.py` was not properly wired into execution flow.
@@ -18,8 +35,7 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [0.3.1] - 2025-08-11
 
 ### Added
-- Rebuilt internal workflow for github actions
-
+- Rebuilt internal workflow for GitHub Actions.
 
 ## [0.3.0] - 2025-08-10
 
@@ -43,31 +59,33 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - **Async execution:** Standardized use of `asyncio.to_thread()` for async-safe file and handler operations.
 - **Logging:** Improved consistency and clarity of logging across all modules.
 - **Docker Compose:** Restructured for production best practices and easier local development.
-- **Loose ends:** Numerous bugfixes, code cleanups, and documentation improvements throughout the codebase.
+- **Loose ends:** Numerous bug fixes, code cleanups, and documentation improvements throughout the codebase.
 
 ---
 
 *For migration instructions and more details, see the updated documentation and example configs.*
 
 ## [0.2.1] - 2025-07-28
+
 ### Added
-- Installation experience improved — better onboarding for first-time users
-- Expanded log clarity during GPG encryption steps
-- Enhanced error messages for file validation and failure points
+- Installation experience improved — better onboarding for first-time users.
+- Expanded log clarity during GPG encryption steps.
+- Enhanced error messages for file validation and failure points.
 
 ### Changed
-- Reworked postprocessor naming for clarity
-- Minor internal doc cleanup and README flow diagram
+- Reworked postprocessor naming for clarity.
+- Minor internal doc cleanup and README flow diagram.
 
 ## [0.2.0] - 2025-07-26
+
 ### Major Updates
-- Rewrote core logic with async handling
-- Improved validation and error messaging across all handlers
-- Added GPG encryption support
-- New Docker packaging and GHCR integration
+- Rewrote core logic with async handling.
+- Improved validation and error messaging across all handlers.
+- Added GPG encryption support.
+- New Docker packaging and GHCR integration.
 
 ## [0.1.5] - 2025-07-22
+
 ### Initial Public Release
-- Basic metadata scrubbing
-- HEIC handler and rudimentary postprocessing
-- Posted to Reddit and Docker Hub
+- Basic metadata scrubbing.
+- HEIC handler and rudimentary postprocessing.

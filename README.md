@@ -1,4 +1,4 @@
-# rMeta v0.3.2 — Clean Your Files, Keep Your Privacy
+# rMeta v0.4.0 — Clean Your Files, Keep Your Privacy
 
 rMeta is a local-only file metadata scrubber that's fast, secure, and doesn't send your data anywhere **EVER**. Whether you're a journalist, lawyer, researcher, or just someone who wants to keep sensitive files clean, rMeta gives you full control over your privacy.
 
@@ -106,7 +106,16 @@ rMeta is designed to run locally. Development mode (flask run) is not hardened a
 
 The `dev/` directory contains sample files and scripts used during development. It’s not meant to enforce a test suite — it’s there to illustrate what rMeta was validated against. These assets can help you explore edge cases or understand scrubbing logic in context.
 
-![rMeta UI](https://gitlab.com/kitquietdev/rmeta/-/raw/main/docs/images/screenshot.png)
+## Simple and Intuitive Workflow
+
+<video width="640" controls>
+  <source src="docs/images/rmeta_demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+_Video demo (MP4, 18s)_
+
+Simply drag and drop (or browse) files into rMeta, select your options, and press Upload. Download links appear instantly below. You can clear the workspace at anytime with the intelligent Clean Memory button.
 
 
 Real-time feedback, smart messaging, and file-level status reporting – all in one lightweight interface.

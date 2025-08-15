@@ -1,6 +1,6 @@
 # routes/session_clean.py
 
-from flask import Blueprint, current_app, render_template, jsonify, request
+from flask import Blueprint, current_app, render_template, jsonify, request, session as flask_session, redirect, url_for
 from utils.cleanup import purge_uploads, check_uploads_dir
 import time
 
@@ -17,14 +17,22 @@ def clean_memory():
     # Update app config to reflect clean state
     current_app.config["HAS_DIRTY_DATA"] = False
     
+    # Clear the app-level attributes that store file results
+    flask_session.pop('processing_results', None)
+    flask_session.pop('session_id', None)
+    flask_session.pop('_flashes', None)
+    
+    # Also clear any flash messages
+    flask_session.pop('_flashes', None)
+    
     # Log the action
     if files_removed:
         current_app.logger.info("🧼 Manual cleanup: files removed")
     else:
         current_app.logger.info("🧼 Manual cleanup: already clean")
     
-    # Render redirect page with 2-second delay
-    return render_template("cleanup_redirect.html")
+    # Redirect back to main page to show clean state
+    return redirect(url_for('upload.index'))
 
 @session_clean_bp.route("/status", methods=["GET"], endpoint="check_status")
 def check_status():

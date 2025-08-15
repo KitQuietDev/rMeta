@@ -2,7 +2,7 @@ import os
 import uuid
 import asyncio
 import logging
-from flask import Blueprint, request, redirect, url_for, flash, current_app, render_template
+from flask import Blueprint, request, redirect, url_for, flash, current_app, render_template, session as flask_session
 from werkzeug.utils import secure_filename
 from handlers import get_handler_for_extension
 from utils.cleanup import (
@@ -15,6 +15,7 @@ from postprocessors.import_hashlib import generate_hash
 from postprocessors.gpg_encryptor import encrypt_with_gpg
 from utils.chunking import audit_files, chunk_files_by_size, process_chunks
 from utils.system import get_available_memory_mb
+
 
 logger = logging.getLogger(__name__)
 
@@ -160,16 +161,17 @@ def upload_file():
     # Process chunks
     process_chunks(chunks, min_memory_mb=500, processor=process_files)
 
-    current_app.processing_results = processed_files  # type: ignore
-    current_app.session_id = session_id  # type: ignore
+    from flask import session as flask_session
+    flask_session['processing_results'] = processed_files
+    flask_session['session_id'] = session_id
 
     flash(f"✅ Processed {len(processed_files)} files in {len(chunks)} chunks.")
     return redirect(url_for("upload.index"))
 
 @upload_bp.route("/", methods=["GET"], endpoint="index")
 def index():
-    session_id = getattr(current_app, "session_id", None)
-    files = getattr(current_app, "processing_results", [])
+    session_id = flask_session.get("session_id", None)
+    files = flask_session.get("processing_results", None)
     messages = list(getattr(current_app, "_flashes", []))
 
     has_dirty_data = uploads_are_dirty()
