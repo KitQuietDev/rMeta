@@ -42,7 +42,7 @@ async def scrub(file_path: str) -> None:
         for para in doc.paragraphs:
             new_doc.add_paragraph(para.text)
         temp_path = path.with_suffix(".tmp.docx")
-        new_doc.save(temp_path)
+        new_doc.save(temp_path) # type: ignore
         os.replace(temp_path, path)
         logger.info(f"📝 DOCX scrubbed: {file_path}")
 

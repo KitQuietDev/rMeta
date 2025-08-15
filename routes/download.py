@@ -11,7 +11,7 @@ def register_download_routes(app, config):
 
     @download_bp.route("/download/<session>/<filename>")
     def download_file(session, filename):
-        safe_dir = os.path.join(SESSIONS_ROOT, secure_filename(session))
+        safe_dir = os.path.join(SESSIONS_ROOT, f"session_{secure_filename(session)}")
         mark_session_active(safe_dir)
         return send_from_directory(safe_dir, filename, as_attachment=True)
 

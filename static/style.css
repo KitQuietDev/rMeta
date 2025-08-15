@@ -51,6 +51,37 @@ input[type="submit"] {
   border-radius: 0.25rem;
 }
 
+/* 🧼 Memory Clean Button */
+.clean-btn {
+  border: 2px dashed;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  margin-top: 1em;
+}
+
+.clean-btn.clean {
+  border-color: green;
+  color: green;
+}
+
+.clean-btn.dirty {
+  border-color: red;
+  color: red;
+}
+
+.clean-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tooltip {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 5px;
+}
+
 /* 📜 List and link styling */
 ul {
   list-style: none;
@@ -77,17 +108,6 @@ a {
   cursor: pointer;
 }
 
-/* 📊 Progress bar animation (works without JS) */
-@keyframes pulse {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(0%); }
-  100% { transform: translateX(100%); }
-}
-
-.progress-bar {
-  animation: pulse 2s ease-in-out infinite;
-}
-
 /* 🌑 DARK MODE OVERRIDES */
 .dark-mode {
   background-color: #121212;
@@ -109,14 +129,6 @@ a {
   color: #66baff;
 }
 
-.dark-mode #progressIndicator div[style*="background: #f5f5f5"] {
-  background: #2a2a2a !important;
-}
-
-.dark-mode #progressIndicator div[style*="background: #e0e0e0"] {
-  background: #444 !important;
-}
-
 /* 📦 Drag-and-drop zone */
 .drop-zone {
   border: 2px dashed #ccc;
@@ -126,7 +138,7 @@ a {
   transition: background-color 0.3s, border-color 0.3s;
 }
 
-.drop-zone.drag-over {
+.drop-zone:hover {
   background-color: #eef;
   border-color: #66f;
 }
@@ -136,7 +148,7 @@ a {
   background-color: #1e1e1e;
 }
 
-.dark-mode .drop-zone.drag-over {
+.dark-mode .drop-zone:hover {
   background-color: #333;
   border-color: #88f;
 }
@@ -152,4 +164,62 @@ a {
 
 .messages li strong {
   color: darkorange;
+}
+
+/* 🌓 Respect system theme preference */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #eee;
+  }
+
+  form {
+    background-color: #1e1e1e;
+  }
+
+  input[type="file"],
+  input[type="submit"] {
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+  }
+
+  a {
+    color: #66baff;
+  }
+
+  .drop-zone {
+    border-color: #555;
+    background-color: #1e1e1e;
+  }
+
+  .drop-zone:hover {
+    background-color: #333;
+    border-color: #88f;
+  }
+}
+
+/* 📊 Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+th, td {
+  border: 1px solid #666;
+  padding: 0.5rem;
+  text-align: left;
+  color: inherit;
+}
+
+th {
+  background-color: transparent;
+  font-weight: bold;
+}
+
+/* 🌒 Dark Mode Overrides */
+.dark-mode th,
+.dark-mode td {
+  border-color: #aaa;
 }

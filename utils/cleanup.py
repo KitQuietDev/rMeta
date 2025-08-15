@@ -11,9 +11,96 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 # Thread-safe session tracking
-_session_lock = threading.RLock()  # Use RLock to prevent deadlocks
+_session_lock = threading.RLock()
 _session_state_file = "/tmp/rmeta_sessions.json"
-_cleanup_threads = {}  # Track active cleanup threads
+_cleanup_threads = {}
+_auto_cleanup_thread = None
+_auto_cleanup_running = False
+
+def purge_uploads(upload_path):
+    """
+    Deletes all contents of the uploads directory.
+    Returns True if any files were removed, False if already clean.
+    """
+    try:
+        if not os.path.exists(upload_path):
+            logger.info(f"📁 Uploads directory doesn't exist: {upload_path}")
+            return False
+            
+        contents = os.listdir(upload_path)
+        if not contents:
+            logger.info(f"✅ Uploads directory already clean: {upload_path}")
+            return False
+            
+        # Remove all contents
+        for item in contents:
+            item_path = os.path.join(upload_path, item)
+            try:
+                if os.path.isfile(item_path) or os.path.islink(item_path):
+                    os.remove(item_path)
+                elif os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+            except Exception as e:
+                logger.error(f"❌ Failed to remove {item_path}: {e}")
+                
+        logger.info(f"🔥 Purged uploads directory: {upload_path} ({len(contents)} items removed)")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Failed to purge uploads directory: {e}")
+        return True  # Assume dirty if purge failed
+
+def check_uploads_dir(upload_path):
+    """
+    Checks if the uploads directory contains any files or folders.
+    Returns True if dirty (has files), False if clean (empty).
+    """
+    try:
+        if not os.path.exists(upload_path):
+            return False
+        return bool(os.listdir(upload_path))
+    except Exception as e:
+        logger.error(f"❌ Error checking uploads dir: {e}")
+        return True  # Assume dirty if check fails
+
+def start_auto_cleanup(upload_path, timeout_sec):
+    """
+    Start the automatic cleanup timer that runs every timeout_sec seconds
+    """
+    global _auto_cleanup_thread, _auto_cleanup_running
+    
+    if _auto_cleanup_running:
+        logger.debug("Auto cleanup already running")
+        return
+        
+    def _auto_cleanup_loop():
+        global _auto_cleanup_running
+        _auto_cleanup_running = True
+        logger.info(f"🕒 Auto cleanup started (interval: {timeout_sec}s)")
+        
+        try:
+            while _auto_cleanup_running:
+                time.sleep(timeout_sec)
+                if _auto_cleanup_running:  # Check again after sleep
+                    if check_uploads_dir(upload_path):
+                        logger.info("🕒 Auto cleanup triggered")
+                        purge_uploads(upload_path)
+                    else:
+                        logger.debug("🕒 Auto cleanup check - directory already clean")
+        except Exception as e:
+            logger.error(f"❌ Auto cleanup error: {e}")
+        finally:
+            _auto_cleanup_running = False
+            logger.info("🛑 Auto cleanup stopped")
+    
+    _auto_cleanup_thread = threading.Thread(target=_auto_cleanup_loop, daemon=True, name="auto-cleanup")
+    _auto_cleanup_thread.start()
+
+def stop_auto_cleanup():
+    """Stop the automatic cleanup timer"""
+    global _auto_cleanup_running
+    _auto_cleanup_running = False
+    logger.info("🛑 Auto cleanup stop requested")
 
 def _load_session_state():
     """Load session state from disk - thread safe"""
@@ -223,8 +310,13 @@ def get_active_sessions():
 
 def stop_all_cleanup():
     """Stop all cleanup threads - for testing/shutdown"""
+    global _auto_cleanup_running
+    
+    # Stop auto cleanup
+    _auto_cleanup_running = False
+    
     with _session_lock:
         thread_count = len(_cleanup_threads)
         _cleanup_threads.clear()
         
-    logger.info(f"🛑 Stopped {thread_count} cleanup threads")
+    logger.info(f"🛑 Stopped {thread_count} cleanup threads + auto cleanup")

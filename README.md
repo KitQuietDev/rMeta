@@ -9,20 +9,15 @@ rMeta removes metadata from sensitive files without sending anything over the ne
 You drag a file in, rMeta strips away the noise, and you get a clean version out. No snooping, no nonsense.
 
 - Don't have javascript?  Cool - rMeta only uses it for theme switching.  
-
 - SHA256 hashfile generation
-
 - Optional GPG public key encryption
-
 - Temporary workspace auto-cleans
-  
 - **Never** phones home
+- Multiple cleanup methods - deletes previous files on startup, shutdown, when you upload new files, and on-demand with handy button control in the webUI.
 
 ## Why Should We Care?
 
-This project started when we couldn't find a sole-source piece of kit that could handle multiple filetypes, cost nothing (really), and make us feel comfortable about sharing sensitive files.
-
-We set out to create something:
+This project started when we couldn't find a sole-source piece of kit that could handle multiple filetypes, cost nothing (really), and make us feel comfortable about sharing sensitive files.  We set out to create something:
 
 - **Durable.**  The app's architecture separates concerns, handles validation, and uses ephemeral working directories.
 - **Customizable.**  We don't handle files you want?  Write your own handler!
@@ -56,7 +51,7 @@ Fastest way to get started. No setup, no config—just run it:
 ```bash
 docker run --rm -d -p 8574:8574 kitquietdev/rmeta:latest
  ```
-_This runs the latest published image on Docker Hub in production mode. No volumes, no persistence. No GitHub account required._
+_This runs the latest published image on Docker Hub in production mode. No volumes, no persistence._
 
 ### 🟡 Option 2: Compose It Right — Using `docker-compose.yml`
 
@@ -123,21 +118,21 @@ File	Purpose
 
 ## 📜 License Compliance
 
-rMeta honors all third-party licenses. See [`THIRD_PARTY.md`](THIRD_PARTY.md) for full attribution.
+rMeta honors all third-party licenses. See [`THIRD_PARTY.md`](https://gitlab.com/kitquietdev/rmeta/-/blob/main/THIRD_PARTY.md) for full attribution.
 
 ## Contributing
 
 Want to add support for a new file type? Improve the UI? Suggest a feature? We welcome contributions of all kinds. Modular architecture makes it easy to plug in new logic.
 
 We'd love to have you on but we ask you to maintain the ethos and stay consistent with our novice-friendly/expert-aware goals.  To do so, please see
-- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+- [Code of Conduct](https://gitlab.com/kitquietdev/rmeta/-/blob/docs/CODE_OF_CONDUCT.md)
 
-- [Our Contributor's Guide](docs/CONTRIBUTING.md)
+- [Our Contributor's Guide](https://gitlab.com/kitquietdev/rmeta/-/blob/main/docs/CONTRIBUTING.md)
 
-- [Our Documentation Guidelines](docs/DOCUMENTATION_GUIDELINES.md)
+- [Our Documentation Guidelines](https://gitlab.com/kitquietdev/rmeta/-/blob/main/docs/DOCUMENTATION_GUIDELINES.md)
 
-- [Developer's Greeting and Guide](docs/DEVELOPERS.md)
+- [Developer's Greeting and Guide](https://gitlab.com/kitquietdev/rmeta/-/blob/main/docs/DEVELOPERS.md)
 
 ## Changes and versioning
 
-This README describes the current state of rMeta. For version history and detailed changes, see [`CHANGELOG.md`](changelog.md).
+This README describes the current state of rMeta. For version history and detailed changes, see [`CHANGELOG.md`](https://gitlab.com/kitquietdev/rmeta/-/blob/main/changelog.md).

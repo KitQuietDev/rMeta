@@ -1,5 +1,8 @@
 services:
   rmeta:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: kitquietdev/rmeta:latest
     container_name: rmeta
     ports:
@@ -15,7 +18,18 @@ services:
     volumes:
       - ./uploads:/app/uploads
       - ./keys:/app/keys:ro
-    command: gunicorn 'renderer:create_wsgi_app()' --bind 0.0.0.0:${FLASK_RUN_PORT:-8574} --workers=2 --timeout=120 --keep-alive=2 --max-requests=1000 --max-requests-jitter=50
+    command: [
+      "gunicorn",
+      "wsgi:app",
+      "--bind", "0.0.0.0:${FLASK_RUN_PORT:-8574}",
+      "--workers", "2",
+      "--timeout", "120",
+      "--keep-alive", "2",
+      "--max-requests", "1000",
+      "--max-requests-jitter", "50",
+      "--log-level", "debug",
+      "--access-logfile", "-"
+    ]
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${FLASK_RUN_PORT:-8574}/health"]
