@@ -20,18 +20,26 @@ docker_build_and_push:
     - docker:dind
   script:
     - echo "$DOCKERHUB_PAT" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+    - echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+
     - |
       if [[ -n "$CI_COMMIT_TAG" ]]; then
         export VERSION="${CI_COMMIT_TAG}"
-        docker build -t kitquietdev/rmeta:${VERSION} .
-        docker push kitquietdev/rmeta:${VERSION}
       elif [[ "$CI_COMMIT_BRANCH" == "main" ]]; then
         export VERSION="main"
-        docker build -t kitquietdev/rmeta:${VERSION} .
-        docker tag kitquietdev/rmeta:main kitquietdev/rmeta:latest
-        docker push kitquietdev/rmeta:main
-        docker push kitquietdev/rmeta:latest
+      else
+        exit 0
       fi
+
+    - docker build -t kitquietdev/rmeta:${VERSION} .
+    - docker tag kitquietdev/rmeta:${VERSION} kitquietdev/rmeta:latest
+    - docker tag kitquietdev/rmeta:${VERSION} ghcr.io/$GHCR_USERNAME/rmeta:${VERSION}
+    - docker tag kitquietdev/rmeta:latest ghcr.io/$GHCR_USERNAME/rmeta:latest
+
+    - docker push kitquietdev/rmeta:${VERSION}
+    - docker push kitquietdev/rmeta:latest
+    - docker push ghcr.io/$GHCR_USERNAME/rmeta:${VERSION}
+    - docker push ghcr.io/$GHCR_USERNAME/rmeta:latest
   rules:
     - if: '$CI_COMMIT_TAG'
     - if: '$CI_COMMIT_BRANCH == "main"'
