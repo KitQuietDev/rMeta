@@ -108,12 +108,9 @@ The `dev/` directory contains sample files and scripts used during development. 
 
 ## Simple and Intuitive Workflow
 
-<video width="640" controls>
-  <source src="docs/images/rmeta_demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![rMeta demo](docs/images/rmeta_demo.gif)
 
-_Video demo (MP4, 18s)_
+_rMeta Workflow Demo_
 
 Simply drag and drop (or browse) files into rMeta, select your options, and press Upload. Download links appear instantly below. You can clear the workspace at anytime with the intelligent Clean Memory button.
 
