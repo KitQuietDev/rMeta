@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from PIL import Image, ImageDraw
 from docx import Document
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 import csv
 
 # 📁 Destination folder
