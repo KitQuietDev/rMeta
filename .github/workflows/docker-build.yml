@@ -27,14 +27,15 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_PAT }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
+      - name: Build and push (with retry)
+        uses: nick-fields/retry@v3
         with:
-          context: .
-          push: true
-          tags: |
-            ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:latest
-            ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:${{ github.ref_name }}
+          timeout_minutes: 10
+          max_attempts: 3
+          command: |
+            docker buildx build --push \
+              -t ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:latest \
+              -t ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:${{ github.ref_name }} .
 
       - name: Install dependencies
         run: |
