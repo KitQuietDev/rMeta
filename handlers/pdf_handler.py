@@ -12,7 +12,7 @@ import logging
 import os
 from pathlib import Path
 import asyncio
-import PyPDF2
+import pypdf
 from utils.pii_scanner import scan_text_for_pii
 
 logger = logging.getLogger(__name__)
@@ -34,11 +34,11 @@ async def scrub(file_path: str) -> None:
     if ext not in SUPPORTED_EXTENSIONS:
         raise ValueError(f"Unsupported file type: {ext}")
 
-    # Make the nested function sync since PyPDF2 is sync
+    # Make the nested function sync since pypdf is sync
     def scrub_pdf():
         with open(file_path, "rb") as input_pdf:
-            reader = PyPDF2.PdfReader(input_pdf)
-            writer = PyPDF2.PdfWriter()
+            reader = pypdf.PdfReader(input_pdf)
+            writer = pypdf.PdfWriter()
             for page in reader.pages:
                 writer.add_page(page)
             writer.add_metadata({})
@@ -57,7 +57,7 @@ async def get_additional_messages(file_path: str) -> list[str]:
 
     def extract_and_scan():
         with open(file_path, "rb") as f:
-            reader = PyPDF2.PdfReader(f)
+            reader = pypdf.PdfReader(f)
             text = "\n".join(page.extract_text() or "" for page in reader.pages)
             return scan_text_for_pii(text)
 
