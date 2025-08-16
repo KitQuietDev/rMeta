@@ -8,6 +8,7 @@ services:
     ports:
       - "${FLASK_RUN_PORT:-8574}:${FLASK_RUN_PORT:-8574}"
     environment:
+      - SECRET_KEY=${SECRET_KEY:-dev-key-123}
       - FLASK_ENV=production
       - SESSION_TIMEOUT=${SESSION_TIMEOUT:-600}
       - FLASK_RUN_PORT=${FLASK_RUN_PORT:-8574}

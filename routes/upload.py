@@ -85,9 +85,18 @@ def upload_file():
     # Chunk supported files
     chunks = chunk_files_by_size(supported, chunk_mb=200)
 
+    # Save GPG key file once if present (before defining process_files)
+    gpg_key_file = request.files.get("gpg_key")
+    gpg_key_path = None
+    if gpg_key_file and gpg_key_file.filename:
+        gpg_key_path = os.path.join(session_dir, secure_filename(gpg_key_file.filename))
+        gpg_key_file.save(gpg_key_path)
+
     # Define processing logic
     def process_files(file_list):
+        logger.info(f"🔍 Entered process_files with {len(file_list)} files")
         for filepath in file_list:
+            logger.info(f"🔍 Processing file: {filepath}")
             filename = os.path.basename(filepath)
             ext = os.path.splitext(filename)[1].lower().lstrip(".")
             handler_entry = get_handler_for_extension(ext)
@@ -135,22 +144,20 @@ def upload_file():
                     except Exception as e:
                         file_result["warnings"].append(f"❌ Hash generation failed: {str(e)}")
 
+                # Use gpg_key_path from outer scope
                 if request.form.get("encrypt_file"):
-                    gpg_key_file = request.files.get("gpg_key")
-                    if gpg_key_file and gpg_key_file.filename:
+                    if gpg_key_path:
                         try:
-                            gpg_key_path = os.path.join(session_dir, secure_filename(gpg_key_file.filename))
-                            gpg_key_file.save(gpg_key_path)
                             encrypted_filename = encrypt_with_gpg(filepath, gpg_key_path)
                             file_result["filename"] = encrypted_filename
                             file_result["encrypted"] = True
-                            os.remove(gpg_key_path)
                             logger.info(f"🔐 File encrypted: {encrypted_filename}")
                         except Exception as e:
                             file_result["warnings"].append(f"❌ GPG encryption failed: {str(e)}")
                     else:
                         file_result["warnings"].append(f"❌ GPG encryption requested but no key provided.")
 
+                logger.info(f"🔍 Appending result: {file_result}")
                 processed_files.append(file_result)
 
             except Exception as e:
@@ -160,10 +167,11 @@ def upload_file():
 
     # Process chunks
     process_chunks(chunks, min_memory_mb=500, processor=process_files)
+    logger.info(f"🔍 After chunk processing: {len(processed_files)} files")
 
     from flask import session as flask_session
+    flask_session['session_id'] = session_id  # Make sure session_id is set
     flask_session['processing_results'] = processed_files
-    flask_session['session_id'] = session_id
 
     flash(f"✅ Processed {len(processed_files)} files in {len(chunks)} chunks.")
     return redirect(url_for("upload.index"))

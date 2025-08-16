@@ -5,6 +5,9 @@
   <meta name="color-scheme" content="light dark">
   <title>rMeta</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
 
@@ -46,6 +49,10 @@
     </button>
     <div class="tooltip">Removes temporary session data</div>
   </form>
+  <button onclick="document.getElementById('debug-dump').classList.toggle('hidden')">
+    Show/Hide Debug Info
+  </button>
+  <pre id="debug-dump" class="hidden">{{ files | tojson(indent=2) }}</pre>
 
   <!-- 📜 Status messages -->
   {% if messages %}
@@ -117,12 +124,16 @@
         {% for file in files %}
           <tr>
             <td>
-              <a href="{{ url_for('download.download_file', session=session, filename=file.filename) }}">
+              {% if session and file.filename %}
+                <a href="{{ url_for('download.download_file', session=session, filename=file.filename) }}">
+                  {{ file.filename }}
+                </a>
+              {% else %}
                 {{ file.filename }}
-              </a>
+              {% endif %}
             </td>
             <td>
-              {% if file.hash_file %}
+              {% if file.hash_file and session %}
                 <a href="{{ url_for('download.download_file', session=session, filename=file.hash_file) }}">
                   {{ file.hash_file }}
                 </a>
