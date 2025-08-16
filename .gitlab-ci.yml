@@ -20,7 +20,6 @@ docker_build_and_push:
     - docker:dind
   script:
     - echo "$DOCKERHUB_PAT" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-    - echo "GHCR_PAT length: ${#GHCR_PAT}"
     - echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 
     - |
