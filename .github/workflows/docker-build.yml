@@ -10,6 +10,9 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-attempts: 3   # Retry up to 3 times
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,4 +43,3 @@ jobs:
           pip install pypdf>=3.9.0
           echo "import PyPDF2" > test_import.py
           python test_import.py
-#          
