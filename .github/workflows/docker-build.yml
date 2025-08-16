@@ -10,9 +10,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      max-attempts: 3   # Retry up to 3 times
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,20 +24,8 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_PAT }}
 
-      - name: Build and push (with retry)
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: |
-            docker buildx build --push \
-              -t ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:latest \
-              -t ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:${{ github.ref_name }} .
-
-      - name: Install dependencies
+      - name: Build and push
         run: |
-          python -m pip install --upgrade pip
-          pip uninstall PyPDF2
-          pip install pypdf>=3.9.0
-          echo "import PyPDF2" > test_import.py
-          python test_import.py
+          docker buildx build --push \
+            -t ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:latest \
+            -t ghcr.io/${{ secrets.GHCR_USERNAME }}/rmeta:${{ github.ref_name }} .
