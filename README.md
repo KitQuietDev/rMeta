@@ -80,6 +80,12 @@ _This runs rMeta in development mode with hot reload and mounted volumes._
 *Edit the fresh `docker-compose.yml` as needed for your local dev environment.
 
 ### **Do not expose this setup to the internet.**
+
+---
+Prefer a pure command-line workflow?  
+Check out rMetaCLI for privacy-first, batch metadata scrubbing:  [GitLab](https://gitlab.com/KitQuietDev/rmetacli) | [GitHub](https://github.com/KitQuietDev/rMetaCLI)
+
+---
 ## ⚠️ Security Warning
 
 rMeta is designed to run locally. Development mode (flask run) is not hardened and should never be exposed to the internet.
