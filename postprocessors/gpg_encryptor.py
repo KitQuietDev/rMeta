@@ -55,7 +55,7 @@ def encrypt_with_gpg(file_path: str, public_key_path: str) -> str:
         import_result = subprocess.run(import_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if import_result.returncode != 0:
             raise RuntimeError(f"GPG key import failed: {import_result.stderr.decode().strip()}")
-        logger.info(f"🔑 GPG key imported successfully from: {public_key_path}")
+        logger.info(f"GPG key imported successfully from: {public_key_path}")
 
         # Extract recipient from key
         list_cmd = ["gpg", "--homedir", gpg_home, "--list-keys", "--with-colons"]
@@ -92,16 +92,16 @@ def encrypt_with_gpg(file_path: str, public_key_path: str) -> str:
         final = Path(output_path)
         if not final.exists() or final.stat().st_size == 0:
             raise RuntimeError(f"Encrypted output missing or empty: {output_path}")
-        logger.info(f"🔐 File encrypted: {output_path}")
+        logger.info(f"File encrypted: {output_path}")
         return final.name
 
     except Exception as e:
-        logger.error(f"❌ Encryption error for {file_path}: {e}")
+        logger.error(f"Encryption error for {file_path}: {e}")
         raise
 
     finally:
         try:
             shutil.rmtree(gpg_home)
-            logger.debug(f"🧹 Temporary GPG home deleted: {gpg_home}")
+            logger.debug(f"Temporary GPG home deleted: {gpg_home}")
         except Exception as cleanup_error:
-            logger.warning(f"⚠️ Cleanup failed for {gpg_home}: {cleanup_error}")
+            logger.warning(f"Cleanup failed for {gpg_home}: {cleanup_error}")

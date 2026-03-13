@@ -32,10 +32,10 @@ def load_handlers():
                         "msgs_is_async": msgs_is_async,  # Track separately
                         "pii_detect": pii_flag
                     }
-                logger.info(f"✅ Loaded handler: {module_name} for extensions: {supported}")
+                logger.info(f"Loaded handler: {module_name} for extensions: {supported}")
                 logger.debug(f"   Scrub async: {scrub_is_async}, Messages async: {msgs_is_async}")
             except Exception as e:
-                logger.error(f"❌ Failed to load handler {module_name}: {e}")
+                logger.error(f"Failed to load handler {module_name}: {e}")
 
 load_handlers()
 

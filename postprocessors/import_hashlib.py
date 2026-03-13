@@ -46,7 +46,7 @@ def generate_hash(file_path: str, algo: str = "sha256") -> str:
             while chunk := f.read(8192):
                 h.update(chunk)
     except Exception as read_err:
-        logger.error(f"❌ Failed to read file for hashing: {file_path}")
+        logger.error(f"Failed to read file for hashing: {file_path}")
         raise IOError(f"Error reading file {file_path}: {read_err}")
 
     hash_hex = h.hexdigest()
@@ -56,11 +56,11 @@ def generate_hash(file_path: str, algo: str = "sha256") -> str:
         with open(hash_path, "w") as out:
             out.write(f"{path.name}: {hash_hex}\n")
     except Exception as write_err:
-        logger.error(f"❌ Failed to write hash output: {hash_path}")
+        logger.error(f"Failed to write hash output: {hash_path}")
         raise RuntimeError(f"Error writing hash file {hash_path}: {write_err}")
 
     if not hash_path.exists() or hash_path.stat().st_size == 0:
         raise RuntimeError(f"Generated hash file is missing or empty: {hash_path}")
 
-    logger.info(f"🧮 Hash generated: {hash_path.name}")
+    logger.info(f"Hash generated: {hash_path.name}")
     return hash_path.name

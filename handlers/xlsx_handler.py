@@ -4,8 +4,8 @@
 Excel Metadata Scrubber for rMeta
 
 Rewrites spreadsheet content to a clean workbook.
-✅ Format: .xlsx
-🔐 Non-destructive to cell data
+Format: .xlsx
+Non-destructive to cell data
 """
 #
 import logging
@@ -49,7 +49,7 @@ async def scrub(file_path: str) -> None:
         temp_path = path.with_suffix(".tmp.xlsx")
         clean.save(temp_path)
         os.replace(temp_path, path)
-        logger.info(f"📊 Excel scrubbed: {file_path}")
+        logger.info(f"Excel scrubbed: {file_path}")
 
     # Run the sync function in a thread pool
     await asyncio.to_thread(scrub_xlsx)
@@ -58,7 +58,7 @@ async def scrub(file_path: str) -> None:
         raise RuntimeError(f"Scrubbed Excel file missing or empty: {file_path}")
 
 async def get_additional_messages(file_path: str) -> List[str]:
-    messages: List[str] = [f"✅ Metadata stripped from {Path(file_path).name}"]
+    messages: List[str] = [f"Metadata stripped from {Path(file_path).name}"]
 
     def extract_and_scan():
         wb = openpyxl.load_workbook(file_path, data_only=True)
@@ -76,8 +76,8 @@ async def get_additional_messages(file_path: str) -> List[str]:
     try:
         pii_found = await asyncio.to_thread(extract_and_scan)
         for pii_type in pii_found:
-            messages.append(f"⚠️ PII detected: {pii_type.title()} found in file")
+            messages.append(f"PII detected: {pii_type.title()} found in file")
     except Exception as e:
-        logger.warning(f"⚠️ Could not scan Excel for PII: {e}")
+        logger.warning(f"Could not scan Excel for PII: {e}")
 
     return messages

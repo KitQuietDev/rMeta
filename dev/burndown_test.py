@@ -6,7 +6,7 @@ from docx import Document
 from pypdf import PdfWriter
 import csv
 
-# 📁 Destination folder
+# Destination folder
 OUT_DIR = Path("meta_dirty_bundle")
 OUT_DIR.mkdir(exist_ok=True)
 
@@ -69,7 +69,7 @@ def zip_payload():
     with zipfile.ZipFile(zip_path, "w") as zipf:
         for file in OUT_DIR.iterdir():
             zipf.write(file, arcname=file.name)
-    print(f"✅ ZIP bundle created: {zip_path}")
+    print(f"ZIP bundle created: {zip_path}")
 
 if __name__ == "__main__":
     create_txt()

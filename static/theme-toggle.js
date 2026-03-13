@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Abort if elements aren't present (defensive check)
   if (!btn || !label) {
-    console.warn("⚠️ Theme toggle button or label not found.");
+    console.warn("Theme toggle button or label not found.");
     return;
   }
 
@@ -28,14 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
       case "dark":
         document.body.classList.add("dark-mode");
         label.textContent = "Dark Mode";
-        btn.textContent = "☀️"; // Icon indicates *next* mode
+        btn.textContent = "Light"; // Icon indicates *next* mode
         btn.title = "Toggle theme (Next: Light)";
         break;
 
       case "light":
         document.body.classList.remove("dark-mode");
         label.textContent = "Light Mode";
-        btn.textContent = "🖥️";
+        btn.textContent = "System";
         btn.title = "Toggle theme (Next: System)";
         break;
 
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.classList.remove("dark-mode");
           label.textContent = "System (Light)";
         }
-        btn.textContent = "🌙";
+        btn.textContent = "Dark";
         btn.title = "Toggle theme (Next: Dark)";
         break;
     }

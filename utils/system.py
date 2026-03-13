@@ -37,7 +37,7 @@ def start_memory_watchdog(min_mb, sessions_root=None):
                 import psutil
                 mem_available = psutil.virtual_memory().available / (1024 * 1024)
                 if mem_available < min_mb:
-                    logger.warning(f"🧠 Memory low: {mem_available:.1f}MB available (threshold: {min_mb}MB)")
+                    logger.warning(f"Memory low: {mem_available:.1f}MB available (threshold: {min_mb}MB)")
                     if sessions_root:
                         cleanup_orphaned_sessions(sessions_root, max_age_hours=1)
             except Exception as e:
@@ -46,4 +46,4 @@ def start_memory_watchdog(min_mb, sessions_root=None):
 
     thread = threading.Thread(target=_watchdog, daemon=True, name="memory-watchdog")
     thread.start()
-    logger.info(f"🚨 Memory watchdog started (threshold: {min_mb}MB)")
+    logger.info(f"Memory watchdog started (threshold: {min_mb}MB)")

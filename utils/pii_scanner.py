@@ -4,11 +4,11 @@
 PII Scanner for rMeta
 
 Scans plain text for common types of personally identifiable information (PII):
-✅ Email addresses
-✅ Phone numbers
-✅ Social Security Numbers (SSNs)
-✅ Physical addresses (basic heuristics)
-✅ Names (optional, heuristic-based)
+- Email addresses
+- Phone numbers
+- Social Security Numbers (SSNs)
+- Physical addresses (basic heuristics)
+- Names (optional, heuristic-based)
 
 Returns a set of detected PII types.
 """

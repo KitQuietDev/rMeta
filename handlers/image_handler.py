@@ -45,20 +45,20 @@ def scrub(file_path: str) -> None:
     try:
         if ext in EXIF_EXTENSIONS:
             piexif.remove(str(path))
-            logger.info(f"✅ EXIF metadata removed from: {file_path}")
+            logger.info(f"EXIF metadata removed from: {file_path}")
         elif ext in OTHER_EXTENSIONS:
             with Image.open(path) as img:
                 img_data = list(img.getdata())
                 scrubbed = Image.new(img.mode, img.size)
                 scrubbed.putdata(img_data)
                 scrubbed.save(path)
-                logger.info(f"✅ Metadata stripped from non-EXIF format: {file_path}")
+                logger.info(f"Metadata stripped from non-EXIF format: {file_path}")
         else:
             raise ValueError(f"No handler available for file extension: {ext}")
     except Exception as e:
-        logger.error(f"❌ Error scrubbing metadata from {file_path}: {e}")
+        logger.error(f"Error scrubbing metadata from {file_path}: {e}")
         raise RuntimeError(f"Scrubbing failed for {file_path}: {e}")
 
     if not path.exists() or path.stat().st_size == 0:
-        logger.error(f"❌ Output file validation failed: {file_path}")
+        logger.error(f"Output file validation failed: {file_path}")
         raise RuntimeError(f"Scrubbed output missing or empty: {file_path}")
