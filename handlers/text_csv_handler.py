@@ -4,8 +4,8 @@
 Plaintext & CSV Metadata Scrubber for rMeta
 
 Strips metadata by rewriting content to a clean file.
-✅ Formats: .txt, .csv
-🔐 Non-destructive to content
+Formats: .txt, .csv
+Non-destructive to content
 """
 
 import logging
@@ -44,7 +44,7 @@ async def scrub(file_path: str) -> None:
             f.write(content)
 
         os.replace(temp_path, path)
-        logger.info(f"📄 Text/CSV scrubbed: {file_path}")
+        logger.info(f"Text/CSV scrubbed: {file_path}")
 
     # Run the sync function in a thread pool
     await asyncio.to_thread(scrub_text_csv)
@@ -53,7 +53,7 @@ async def scrub(file_path: str) -> None:
         raise RuntimeError(f"Scrubbed file missing or empty: {file_path}")
 
 async def get_additional_messages(file_path: str) -> List[str]:
-    messages: List[str] = [f"✅ Metadata stripped from {Path(file_path).name}"]
+    messages: List[str] = [f"Metadata stripped from {Path(file_path).name}"]
 
     def scan_file():
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
@@ -63,8 +63,8 @@ async def get_additional_messages(file_path: str) -> List[str]:
         text = await asyncio.to_thread(scan_file)
         pii_found = scan_text_for_pii(text)
         for pii_type in pii_found:
-            messages.append(f"⚠️ PII detected: {pii_type.title()} found in file")
+            messages.append(f"PII detected: {pii_type.title()} found in file")
     except Exception as e:
-        logger.warning(f"⚠️ Could not scan file for PII: {e}")
+        logger.warning(f"Could not scan file for PII: {e}")
 
     return messages

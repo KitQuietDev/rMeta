@@ -70,7 +70,7 @@ def upload_file():
 
         filepath = os.path.join(session_dir, filename)
         file.save(filepath)
-        logger.info(f"📥 Uploaded: {filepath}")
+        logger.info(f"Uploaded: {filepath}")
         saved_paths.append(filepath)
 
     # Audit files for memory and support
@@ -78,9 +78,9 @@ def upload_file():
     supported, too_large, skipped = audit_files(saved_paths, min_memory_mb=available_mem)
 
     for f, reason in skipped:
-        flash(f"⚠️ Skipped {os.path.basename(f)}: {reason}")
+        flash(f"Skipped {os.path.basename(f)}: {reason}")
     for f, size in too_large:
-        flash(f"🚫 Too large to process now: {os.path.basename(f)} ({size:.1f}MB)")
+        flash(f"Too large to process now: {os.path.basename(f)} ({size:.1f}MB)")
 
     # Chunk supported files
     chunks = chunk_files_by_size(supported, chunk_mb=200)
@@ -94,15 +94,15 @@ def upload_file():
 
     # Define processing logic
     def process_files(file_list):
-        logger.info(f"🔍 Entered process_files with {len(file_list)} files")
+        logger.info(f"Entered process_files with {len(file_list)} files")
         for filepath in file_list:
-            logger.info(f"🔍 Processing file: {filepath}")
+            logger.info(f"Processing file: {filepath}")
             filename = os.path.basename(filepath)
             ext = os.path.splitext(filename)[1].lower().lstrip(".")
             handler_entry = get_handler_for_extension(ext)
 
             if not handler_entry:
-                flash(f"❌ Unsupported file type: {filename}")
+                flash(f"Unsupported file type: {filename}")
                 continue
 
             file_result = {
@@ -125,7 +125,7 @@ def upload_file():
                         asyncio.run(scrub_fn(filepath))
                     else:
                         scrub_fn(filepath)
-                    logger.info(f"✅ Scrubbed metadata from: {filename}")
+                    logger.info(f"Scrubbed metadata from: {filename}")
 
                 # Step 2: Get additional messages
                 if get_additional_messages_fn:
@@ -140,9 +140,9 @@ def upload_file():
                     try:
                         hash_filename = generate_hash(filepath)
                         file_result["hash_file"] = hash_filename
-                        logger.info(f"🧮 Hash generated: {hash_filename}")
+                        logger.info(f"Hash generated: {hash_filename}")
                     except Exception as e:
-                        file_result["warnings"].append(f"❌ Hash generation failed: {str(e)}")
+                        file_result["warnings"].append(f"Hash generation failed: {str(e)}")
 
                 # Use gpg_key_path from outer scope
                 if request.form.get("encrypt_file"):
@@ -151,29 +151,29 @@ def upload_file():
                             encrypted_filename = encrypt_with_gpg(filepath, gpg_key_path)
                             file_result["filename"] = encrypted_filename
                             file_result["encrypted"] = True
-                            logger.info(f"🔐 File encrypted: {encrypted_filename}")
+                            logger.info(f"File encrypted: {encrypted_filename}")
                         except Exception as e:
-                            file_result["warnings"].append(f"❌ GPG encryption failed: {str(e)}")
+                            file_result["warnings"].append(f"GPG encryption failed: {str(e)}")
                     else:
-                        file_result["warnings"].append(f"❌ GPG encryption requested but no key provided.")
+                        file_result["warnings"].append(f"GPG encryption requested but no key provided.")
 
-                logger.info(f"🔍 Appending result: {file_result}")
+                logger.info(f"Appending result: {file_result}")
                 processed_files.append(file_result)
 
             except Exception as e:
-                logger.exception(f"❌ Failed processing {filename}: {e}")
-                file_result["warnings"].append(f"❌ Error processing file: {str(e)}")
+                logger.exception(f"Failed processing {filename}: {e}")
+                file_result["warnings"].append(f"Error processing file: {str(e)}")
                 processed_files.append(file_result)
 
     # Process chunks
     process_chunks(chunks, min_memory_mb=500, processor=process_files)
-    logger.info(f"🔍 After chunk processing: {len(processed_files)} files")
+    logger.info(f"After chunk processing: {len(processed_files)} files")
 
     from flask import session as flask_session
     flask_session['session_id'] = session_id  # Make sure session_id is set
     flask_session['processing_results'] = processed_files
 
-    flash(f"✅ Processed {len(processed_files)} files in {len(chunks)} chunks.")
+    flash(f"Processed {len(processed_files)} files in {len(chunks)} chunks.")
     return redirect(url_for("upload.index"))
 
 @upload_bp.route("/", methods=["GET"], endpoint="index")

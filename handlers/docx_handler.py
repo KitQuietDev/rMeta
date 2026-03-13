@@ -4,8 +4,8 @@
 DOCX Metadata Scrubber for rMeta
 
 Copies paragraph content to a fresh document to remove embedded metadata.
-✅ Format: .docx
-🔐 Non-destructive to content
+Format: .docx
+Non-destructive to content
 """
 
 import logging
@@ -44,7 +44,7 @@ async def scrub(file_path: str) -> None:
         temp_path = path.with_suffix(".tmp.docx")
         new_doc.save(temp_path) # type: ignore
         os.replace(temp_path, path)
-        logger.info(f"📝 DOCX scrubbed: {file_path}")
+        logger.info(f"DOCX scrubbed: {file_path}")
 
     # Run the sync function in a thread pool
     await asyncio.to_thread(scrub_docx)
@@ -53,7 +53,7 @@ async def scrub(file_path: str) -> None:
         raise RuntimeError(f"Scrubbed DOCX file missing or empty: {file_path}")
 
 async def get_additional_messages(file_path: str) -> list[str]:
-    messages = [f"✅ Metadata stripped from DOCX: {Path(file_path).name}"]
+    messages = [f"Metadata stripped from DOCX: {Path(file_path).name}"]
 
     def extract_and_scan():
         doc = docx.Document(file_path)
@@ -63,8 +63,8 @@ async def get_additional_messages(file_path: str) -> list[str]:
     try:
         pii_found = await asyncio.to_thread(extract_and_scan)
         for pii_type in pii_found:
-            messages.append(f"⚠️ PII detected: {pii_type.title()} found in file")
+            messages.append(f"PII detected: {pii_type.title()} found in file")
     except Exception as e:
-        logger.warning(f"⚠️ Could not scan DOCX for PII: {e}")
+        logger.warning(f"Could not scan DOCX for PII: {e}")
 
     return messages

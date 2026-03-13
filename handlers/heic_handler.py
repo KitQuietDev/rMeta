@@ -4,8 +4,8 @@
 HEIC Metadata Scrubber for rMeta
 
 Removes embedded metadata from HEIC image files.
-✅ Format: .heic
-🔐 Non-destructive to image pixels
+Format: .heic
+Non-destructive to image pixels
 """
 
 import logging
@@ -43,7 +43,7 @@ async def scrub(file_path: str) -> None:
         temp_path = path.with_suffix(".tmp.heic")
         image.save(temp_path, format="HEIF", exif=None, quality=95)
         os.replace(temp_path, path)
-        logger.info(f"🖼️ HEIC scrubbed: {file_path}")
+        logger.info(f"HEIC scrubbed: {file_path}")
 
     await asyncio.to_thread(scrub_heic)
 
@@ -51,4 +51,4 @@ async def scrub(file_path: str) -> None:
         raise RuntimeError(f"Scrubbed HEIC file missing or empty: {file_path}")
 
 async def get_additional_messages(file_path: str) -> list[str]:
-    return [f"✅ Metadata stripped from HEIC: {Path(file_path).name}"]
+    return [f"Metadata stripped from HEIC: {Path(file_path).name}"]

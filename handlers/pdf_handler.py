@@ -4,8 +4,8 @@
 PDF Metadata Scrubber for rMeta
 
 Removes embedded metadata and scans for PII in extracted text.
-✅ Format: .pdf
-🔐 Non-destructive to content
+Format: .pdf
+Non-destructive to content
 """
 
 import logging
@@ -44,7 +44,7 @@ async def scrub(file_path: str) -> None:
             writer.add_metadata({})
             with open(file_path, "wb") as output_pdf:
                 writer.write(output_pdf)
-        logger.info(f"✅ Metadata removed from PDF: {file_path}")
+        logger.info(f"Metadata removed from PDF: {file_path}")
 
     # Run the sync function in a thread pool
     await asyncio.to_thread(scrub_pdf)
@@ -53,7 +53,7 @@ async def scrub(file_path: str) -> None:
         raise RuntimeError(f"Scrubbed output missing or empty: {file_path}")
 
 async def get_additional_messages(file_path: str) -> list[str]:
-    messages = [f"✅ Metadata stripped from PDF: {Path(file_path).name}"]
+    messages = [f"Metadata stripped from PDF: {Path(file_path).name}"]
 
     def extract_and_scan():
         with open(file_path, "rb") as f:
@@ -64,8 +64,8 @@ async def get_additional_messages(file_path: str) -> list[str]:
     try:
         pii_found = await asyncio.to_thread(extract_and_scan)
         for pii_type in pii_found:
-            messages.append(f"⚠️ PII detected: {pii_type.title()} found in file")
+            messages.append(f"PII detected: {pii_type.title()} found in file")
     except Exception as e:
-        logger.warning(f"⚠️ Could not scan PDF for PII: {e}")
+        logger.warning(f"Could not scan PDF for PII: {e}")
 
     return messages

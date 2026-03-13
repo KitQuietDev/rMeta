@@ -35,10 +35,10 @@ def load_config():
     if not os.path.exists(upload_dir):
         try:
             os.makedirs(upload_dir, exist_ok=True)
-            logger.info(f"📁 Created upload directory: {upload_dir}")
+            logger.info(f"Created upload directory: {upload_dir}")
         except Exception as e:
-            logger.error(f"❌ Failed to create upload directory {upload_dir}: {e}")
+            logger.error(f"Failed to create upload directory {upload_dir}: {e}")
             raise RuntimeError(f"Cannot create upload directory: {e}")
     
-    logger.info(f"⚙️ Configuration loaded: {len(config)} settings")
+    logger.info(f"Configuration loaded: {len(config)} settings")
     return config

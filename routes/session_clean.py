@@ -27,9 +27,9 @@ def clean_memory():
     
     # Log the action
     if files_removed:
-        current_app.logger.info("🧼 Manual cleanup: files removed")
+        current_app.logger.info("Manual cleanup: files removed")
     else:
-        current_app.logger.info("🧼 Manual cleanup: already clean")
+        current_app.logger.info("Manual cleanup: already clean")
     
     # Redirect back to main page to show clean state
     return redirect(url_for('upload.index'))

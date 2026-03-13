@@ -15,7 +15,7 @@ from utils.cleanup import purge_uploads, check_uploads_dir, start_auto_cleanup, 
 
 def handle_shutdown(signum, frame):
     """Handle shutdown signals gracefully"""
-    print(f"🛑 Received shutdown signal ({signum}). Cleaning up...")
+    print(f"Received shutdown signal ({signum}). Cleaning up...")
     
     # Stop all cleanup threads
     stop_all_cleanup()
@@ -56,7 +56,7 @@ def create_app():
     # Purge uploads directory on startup
     startup_cleanup = purge_uploads(upload_folder)
     if startup_cleanup:
-        print(f"🧹 Startup cleanup completed")
+        print("Startup cleanup completed")
     
     # Start the auto cleanup timer
     start_auto_cleanup(upload_folder, session_timeout)
@@ -115,7 +115,7 @@ def main():
     )
     
     # Optional: Print registered routes for debugging
-    print("🔗 Registered routes:")
+    print("Registered routes:")
     for rule in app.url_map.iter_rules():
         print(f"  {rule.endpoint} -> {rule.rule}")
     
@@ -123,7 +123,7 @@ def main():
         # Run the app using renderer's run method
         app.renderer.run() # type: ignore
     except KeyboardInterrupt:
-        print("🛑 Received KeyboardInterrupt")
+        print("Received KeyboardInterrupt")
         handle_shutdown(signal.SIGINT, None)
 
 if __name__ == "__main__":

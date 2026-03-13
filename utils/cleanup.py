@@ -24,12 +24,12 @@ def purge_uploads(upload_path):
     """
     try:
         if not os.path.exists(upload_path):
-            logger.info(f"📁 Uploads directory doesn't exist: {upload_path}")
+            logger.info(f"Uploads directory doesn't exist: {upload_path}")
             return False
             
         contents = os.listdir(upload_path)
         if not contents:
-            logger.info(f"✅ Uploads directory already clean: {upload_path}")
+            logger.info(f"Uploads directory already clean: {upload_path}")
             return False
             
         # Remove all contents
@@ -41,13 +41,13 @@ def purge_uploads(upload_path):
                 elif os.path.isdir(item_path):
                     shutil.rmtree(item_path)
             except Exception as e:
-                logger.error(f"❌ Failed to remove {item_path}: {e}")
+                logger.error(f"Failed to remove {item_path}: {e}")
                 
-        logger.info(f"🔥 Purged uploads directory: {upload_path} ({len(contents)} items removed)")
+        logger.info(f"Purged uploads directory: {upload_path} ({len(contents)} items removed)")
         return True
         
     except Exception as e:
-        logger.error(f"❌ Failed to purge uploads directory: {e}")
+        logger.error(f"Failed to purge uploads directory: {e}")
         return True  # Assume dirty if purge failed
 
 def check_uploads_dir(upload_path):
@@ -60,7 +60,7 @@ def check_uploads_dir(upload_path):
             return False
         return bool(os.listdir(upload_path))
     except Exception as e:
-        logger.error(f"❌ Error checking uploads dir: {e}")
+        logger.error(f"Error checking uploads dir: {e}")
         return True  # Assume dirty if check fails
 
 def start_auto_cleanup(upload_path, timeout_sec):
@@ -76,22 +76,22 @@ def start_auto_cleanup(upload_path, timeout_sec):
     def _auto_cleanup_loop():
         global _auto_cleanup_running
         _auto_cleanup_running = True
-        logger.info(f"🕒 Auto cleanup started (interval: {timeout_sec}s)")
+        logger.info(f"Auto cleanup started (interval: {timeout_sec}s)")
         
         try:
             while _auto_cleanup_running:
                 time.sleep(timeout_sec)
                 if _auto_cleanup_running:  # Check again after sleep
                     if check_uploads_dir(upload_path):
-                        logger.info("🕒 Auto cleanup triggered")
+                        logger.info("Auto cleanup triggered")
                         purge_uploads(upload_path)
                     else:
-                        logger.debug("🕒 Auto cleanup check - directory already clean")
+                        logger.debug("Auto cleanup check - directory already clean")
         except Exception as e:
-            logger.error(f"❌ Auto cleanup error: {e}")
+            logger.error(f"Auto cleanup error: {e}")
         finally:
             _auto_cleanup_running = False
-            logger.info("🛑 Auto cleanup stopped")
+            logger.info("Auto cleanup stopped")
     
     _auto_cleanup_thread = threading.Thread(target=_auto_cleanup_loop, daemon=True, name="auto-cleanup")
     _auto_cleanup_thread.start()
@@ -100,7 +100,7 @@ def stop_auto_cleanup():
     """Stop the automatic cleanup timer"""
     global _auto_cleanup_running
     _auto_cleanup_running = False
-    logger.info("🛑 Auto cleanup stop requested")
+    logger.info("Auto cleanup stop requested")
 
 def _load_session_state():
     """Load session state from disk - thread safe"""
@@ -139,7 +139,7 @@ def mark_session_active(session_path):
             sessions = _load_session_state()
             sessions[session_path] = time.time()
             _save_session_state(sessions)
-            logger.debug(f"📍 Session marked active: {session_path}")
+            logger.debug(f"Session marked active: {session_path}")
         except Exception as e:
             logger.error(f"Failed to mark session active: {e}")
 
@@ -164,7 +164,7 @@ def schedule_cleanup(path, timeout_sec):
     def _cleanup_monitor():
         """Cleanup monitor thread function"""
         thread_id = threading.current_thread().ident
-        logger.info(f"🧹 Cleanup monitor started for: {path} (timeout: {timeout_sec}s, thread: {thread_id})")
+        logger.info(f"Cleanup monitor started for: {path} (timeout: {timeout_sec}s, thread: {thread_id})")
         
         try:
             # Mark as active initially
@@ -179,7 +179,7 @@ def schedule_cleanup(path, timeout_sec):
                         last_access = sessions.get(path, 0)
                         
                         if time.time() - last_access > timeout_sec:
-                            logger.info(f"🕒 Session timeout reached: {path}")
+                            logger.info(f"Session timeout reached: {path}")
                             
                             # Attempt cleanup
                             if os.path.exists(path):
@@ -188,16 +188,16 @@ def schedule_cleanup(path, timeout_sec):
                                     if os.path.isdir(path):
                                         file_count = len(os.listdir(path))
                                         shutil.rmtree(path)
-                                        logger.info(f"✅ Removed session folder: {path} ({file_count} files)")
+                                        logger.info(f"Removed session folder: {path} ({file_count} files)")
                                     else:
                                         os.remove(path)
-                                        logger.info(f"✅ Removed session file: {path}")
+                                        logger.info(f"Removed session file: {path}")
                                 except (OSError, IOError) as cleanup_err:
-                                    logger.error(f"❌ Cleanup failed for {path}: {cleanup_err}")
+                                    logger.error(f"Cleanup failed for {path}: {cleanup_err}")
                                     time.sleep(check_interval)
                                     continue
                             else:
-                                logger.info(f"📁 Session already gone: {path}")
+                                logger.info(f"Session already gone: {path}")
                             
                             # Remove from tracking
                             if path in sessions:
@@ -207,27 +207,27 @@ def schedule_cleanup(path, timeout_sec):
                             # Remove from active threads
                             _cleanup_threads.pop(path, None)
                             
-                            logger.info(f"🏁 Cleanup completed: {path}")
+                            logger.info(f"Cleanup completed: {path}")
                             break
                         
                         else:
                             remaining = timeout_sec - (time.time() - last_access)
-                            logger.debug(f"⏱️ Session {path}: {remaining:.0f}s remaining")
+                            logger.debug(f"Session {path}: {remaining:.0f}s remaining")
                     
                     time.sleep(check_interval)
                     
                 except Exception as monitor_err:
-                    logger.error(f"❌ Monitor error for {path}: {monitor_err}")
+                    logger.error(f"Monitor error for {path}: {monitor_err}")
                     time.sleep(check_interval)
                     
         except Exception as fatal_err:
-            logger.error(f"❌ Fatal cleanup error for {path}: {fatal_err}")
+            logger.error(f"Fatal cleanup error for {path}: {fatal_err}")
         
         finally:
             # Ensure thread is removed from tracking
             with _session_lock:
                 _cleanup_threads.pop(path, None)
-            logger.debug(f"🧹 Cleanup monitor exited for: {path}")
+            logger.debug(f"Cleanup monitor exited for: {path}")
 
     # Start cleanup thread
     try:
@@ -241,10 +241,10 @@ def schedule_cleanup(path, timeout_sec):
             _cleanup_threads[path] = cleanup_thread
             
         cleanup_thread.start()
-        logger.info(f"🚀 Cleanup scheduled for: {path}")
+        logger.info(f"Cleanup scheduled for: {path}")
         
     except Exception as e:
-        logger.error(f"❌ Failed to start cleanup thread for {path}: {e}")
+        logger.error(f"Failed to start cleanup thread for {path}: {e}")
 
 def cleanup_orphaned_sessions(sessions_root, max_age_hours=24):
     """Emergency cleanup for orphaned sessions"""
@@ -255,7 +255,7 @@ def cleanup_orphaned_sessions(sessions_root, max_age_hours=24):
     try:
         sessions_path = Path(sessions_root)
         if not sessions_path.exists():
-            logger.info(f"📁 Sessions directory doesn't exist: {sessions_root}")
+            logger.info(f"Sessions directory doesn't exist: {sessions_root}")
             return
         
         if not sessions_path.is_dir():
@@ -273,19 +273,19 @@ def cleanup_orphaned_sessions(sessions_root, max_age_hours=24):
                     if dir_mtime < cutoff_time:
                         file_count = len(list(session_dir.rglob("*"))) if session_dir.exists() else 0
                         shutil.rmtree(session_dir)
-                        logger.info(f"🧹 Cleaned orphaned session: {session_dir} ({file_count} files)")
+                        logger.info(f"Cleaned orphaned session: {session_dir} ({file_count} files)")
                         cleaned += 1
                 except (OSError, IOError) as e:
-                    logger.warning(f"⚠️ Could not clean {session_dir}: {e}")
+                    logger.warning(f"Could not clean {session_dir}: {e}")
                     errors += 1
 
         if cleaned > 0:
-            logger.info(f"✅ Orphan cleanup: {cleaned} sessions removed, {errors} errors")
+            logger.info(f"Orphan cleanup: {cleaned} sessions removed, {errors} errors")
         else:
-            logger.info(f"🧹 No orphaned sessions found in {sessions_root}")
+            logger.info(f"No orphaned sessions found in {sessions_root}")
             
     except Exception as e:
-        logger.error(f"❌ Orphan cleanup failed: {e}")
+        logger.error(f"Orphan cleanup failed: {e}")
 
 def get_active_sessions():
     """Get active sessions for debugging"""
@@ -319,4 +319,4 @@ def stop_all_cleanup():
         thread_count = len(_cleanup_threads)
         _cleanup_threads.clear()
         
-    logger.info(f"🛑 Stopped {thread_count} cleanup threads + auto cleanup")
+    logger.info(f"Stopped {thread_count} cleanup threads + auto cleanup")

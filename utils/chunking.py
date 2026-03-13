@@ -71,17 +71,17 @@ def process_chunks(chunks, min_memory_mb, processor=None):
     for chunk in chunks:
         available = get_available_memory_mb()
         if available < min_memory_mb:
-            logger.warning(f"🧠 Skipping chunk due to low memory ({available:.1f}MB available)")
+            logger.warning(f"Skipping chunk due to low memory ({available:.1f}MB available)")
             continue
 
         try:
             if processor:
                 processor(chunk)
             else:
-                logger.info(f"📦 Processing chunk: {[os.path.basename(f) for f in chunk]}")
+                logger.info(f"Processing chunk: {[os.path.basename(f) for f in chunk]}")
                 # Replace with your actual processing logic
         except Exception as e:
-            logger.error(f"❌ Error processing chunk: {e}")
+            logger.error(f"Error processing chunk: {e}")
 
 def estimate_required_memory(file_paths):
     """

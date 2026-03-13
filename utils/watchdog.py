@@ -6,4 +6,4 @@ def run_with_timeout(fn, args=(), timeout=10):
         try:
             return future.result(timeout=timeout), None
         except TimeoutError:
-            return None, f"🕓 Timeout exceeded ({timeout}s)"
+            return None, f"Timeout exceeded ({timeout}s)"
