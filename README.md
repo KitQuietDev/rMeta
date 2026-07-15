@@ -79,10 +79,9 @@ If you expose rMeta publicly — reverse proxy, tunnel, port forwarding — that
 - `app.py` / `wsgi.py` — entry points
 - `renderer/flask_renderer.py` — Flask app setup
 - `routes/` — upload, download, and session-cleanup endpoints
-- `handlers/` — one module per file type, auto-discovered at startup
-- `postprocessors/` — optional hashing and GPG encryption
-- `utils/` — cleanup, chunking, memory checks, PII scanning
 - `uploads/` — temporary workspace, wiped automatically
+
+File handlers, postprocessors, and cleanup/chunking/PII-scanning utilities live in [rmeta-core](https://github.com/KitQuietDev/rmeta-core), shared with [rMetaCLI](https://github.com/KitQuietDev/rMetaCLI). This repo pulls it in via `requirements.txt`.
 
 ## Privacy notes
 

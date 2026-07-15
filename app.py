@@ -9,9 +9,9 @@ from renderer import load_renderer
 from routes.upload import register_upload_routes
 from routes.download import register_download_routes
 from routes.session_clean import register_session_clean_routes
-from utils.chunking import audit_files, chunk_files_by_size, process_chunks
-from utils.system import get_available_memory_mb
-from utils.cleanup import purge_uploads, check_uploads_dir, start_auto_cleanup, stop_all_cleanup
+from rmeta_core.utils.chunking import audit_files, chunk_files_by_size, process_chunks
+from rmeta_core.utils.system import get_available_memory_mb
+from rmeta_core.utils.cleanup import purge_uploads, check_uploads_dir, start_auto_cleanup, stop_all_cleanup
 
 def handle_shutdown(signum, frame):
     """Handle shutdown signals gracefully"""

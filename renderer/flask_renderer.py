@@ -3,7 +3,7 @@
 import os
 import secrets
 from flask import Flask, render_template, session as flask_session, get_flashed_messages
-from utils.cleanup import mark_session_active
+from rmeta_core.utils.cleanup import mark_session_active
 
 class FlaskRenderer:
     def __init__(self, config):

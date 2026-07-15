@@ -3,7 +3,7 @@
 from flask import send_from_directory, Blueprint
 from werkzeug.utils import secure_filename
 import os
-from utils.cleanup import mark_session_active
+from rmeta_core.utils.cleanup import mark_session_active
 
 def register_download_routes(app, config):
     SESSIONS_ROOT = config.get("SESSIONS_ROOT", "/tmp/rMeta")

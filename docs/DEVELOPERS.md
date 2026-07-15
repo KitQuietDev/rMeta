@@ -7,8 +7,8 @@ Notes for anyone extending or maintaining rMeta.
 ```
 .
 ├── app.py                    # Flask app entry point
-├── handlers/                 # File-type-specific metadata scrubbers
-├── postprocessors/           # Optional extras: GPG, hashing
+├── renderer/flask_renderer.py # Flask app setup
+├── routes/                   # Upload, download, session-cleanup endpoints
 ├── static/                   # CSS and JS
 ├── templates/                # HTML templates (currently just index.html)
 ├── uploads/                  # Temporary file storage (volume mounted)
@@ -18,18 +18,24 @@ Notes for anyone extending or maintaining rMeta.
 └── docs/                     # This file and related docs
 ```
 
+Handlers, postprocessors, and shared utilities (cleanup, chunking, PII scanning) live in the separate [rmeta-core](https://github.com/KitQuietDev/rmeta-core) package, not in this repo — it's pulled in via `requirements.txt` and shared with rMetaCLI.
+
 ## Adding a file handler
 
-1. Create a new `.py` file in `handlers/`, named `<type>_handler.py`.
+Handlers live in `rmeta-core`, not here. In that repo:
+
+1. Create a new `.py` file in `rmeta_core/handlers/`, named `<type>_handler.py`.
 2. Define `SUPPORTED_EXTENSIONS = {"ext1", "ext2"}` (lowercase) and a `scrub(file_path)` function.
-3. That's it — `handlers/__init__.py` auto-discovers any `*_handler.py` module and registers it by extension at startup.
+3. `rmeta_core/handlers/__init__.py` auto-discovers any `*_handler.py` module and registers it by extension at startup.
+4. Tag a new `rmeta-core` release and bump the pin in this repo's `requirements.txt` to pick it up.
 
 ## Adding a postprocessor
 
-1. Create a `.py` file in `postprocessors/`.
+Also in `rmeta-core`:
+
+1. Create a `.py` file in `rmeta_core/postprocessors/`.
 2. Implement a callable, e.g. `generate_hash(...)`.
-3. Gate it behind a `.env` flag if it should be optional (e.g. `ALLOW_HASH=true`).
-4. Wire the conditional call into `routes/upload.py`.
+3. Tag a release, bump the pin here, then gate it behind a `.env` flag if it should be optional (e.g. `ALLOW_HASH=true`) and wire the conditional call into `routes/upload.py`.
 
 ## Rebuilding the container
 

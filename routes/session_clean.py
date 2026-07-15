@@ -1,7 +1,7 @@
 # routes/session_clean.py
 
 from flask import Blueprint, current_app, render_template, jsonify, request, session as flask_session, redirect, url_for
-from utils.cleanup import purge_uploads, check_uploads_dir
+from rmeta_core.utils.cleanup import purge_uploads, check_uploads_dir
 import time
 
 session_clean_bp = Blueprint("session_clean", __name__)

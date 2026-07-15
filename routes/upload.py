@@ -4,17 +4,17 @@ import asyncio
 import logging
 from flask import Blueprint, request, redirect, url_for, flash, current_app, render_template, session as flask_session
 from werkzeug.utils import secure_filename
-from handlers import get_handler_for_extension
-from utils.cleanup import (
+from rmeta_core.handlers import get_handler_for_extension
+from rmeta_core.utils.cleanup import (
     mark_session_active,
     schedule_cleanup,
     purge_uploads,
     check_uploads_dir
 )
-from postprocessors.hash_generator import generate_hash
-from postprocessors.gpg_encryptor import encrypt_with_gpg
-from utils.chunking import audit_files, chunk_files_by_size, process_chunks
-from utils.system import get_available_memory_mb
+from rmeta_core.postprocessors.hash_generator import generate_hash
+from rmeta_core.postprocessors.gpg_encryptor import encrypt_with_gpg
+from rmeta_core.utils.chunking import audit_files, chunk_files_by_size, process_chunks
+from rmeta_core.utils.system import get_available_memory_mb
 
 
 logger = logging.getLogger(__name__)
