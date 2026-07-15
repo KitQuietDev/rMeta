@@ -29,6 +29,11 @@ class FlaskRenderer:
         for key, value in config.items():
             self.app.config[key] = value
 
+        # Health check for the Docker healthcheck / load balancers
+        @self.app.route("/health")
+        def health():
+            return {"status": "ok"}, 200
+
         # Set up the index route
         @self.app.route("/")
         def index():
