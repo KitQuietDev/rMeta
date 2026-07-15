@@ -162,10 +162,6 @@ a {
   padding-left: 1rem;
 }
 
-.messages li strong {
-  color: darkorange;
-}
-
 /* Respect system theme preference */
 @media (prefers-color-scheme: dark) {
   body {

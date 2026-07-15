@@ -11,7 +11,7 @@ from utils.cleanup import (
     purge_uploads,
     check_uploads_dir
 )
-from postprocessors.import_hashlib import generate_hash
+from postprocessors.hash_generator import generate_hash
 from postprocessors.gpg_encryptor import encrypt_with_gpg
 from utils.chunking import audit_files, chunk_files_by_size, process_chunks
 from utils.system import get_available_memory_mb

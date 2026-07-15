@@ -59,11 +59,7 @@
     <div class="messages">
       <ul>
       {% for msg in messages %}
-        {% if "⚠️" in msg %}
-          <li><strong>{{ msg }}</strong></li>
-        {% else %}
-          <li>{{ msg }}</li>
-        {% endif %}
+        <li>{{ msg }}</li>
       {% endfor %}
       </ul>
     </div>
@@ -85,16 +81,13 @@
             <tr>
               <td>{{ file.filename }}</td>
             <td>
-              {% set has_flagged = false %}
-              <ul>
-                {% for warn in file.warnings %}
-                  {% if "⚠️" in warn %}
-                    {% set has_flagged = true %}
+              {% if file.warnings %}
+                <ul>
+                  {% for warn in file.warnings %}
                     <li>{{ warn }}</li>
-                  {% endif %}
-                {% endfor %}
-              </ul>
-              {% if not has_flagged %}
+                  {% endfor %}
+                </ul>
+              {% else %}
                 —
               {% endif %}
             </td>
