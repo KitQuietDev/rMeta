@@ -3,6 +3,18 @@
 All notable changes to this project will be documented here.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.5.0] - 2026-07-15
+
+### Changed
+- **Handlers, postprocessors, and cleanup/chunking/PII-scanning utilities extracted into [rmeta-core](https://github.com/KitQuietDev/rmeta-core)**, a standalone package shared with rMetaCLI. This repo now pulls it in via `requirements.txt` instead of carrying its own copies.
+- CI/CD consolidated onto GitHub Actions only; the long-dead GitLab pipeline (unsynced since 2025-08-17) is removed. Docker images now publish to GHCR via the repo's own `GITHUB_TOKEN` instead of a manually managed PAT.
+- Dependabot-flagged dependencies (Flask, Werkzeug, python-dotenv, black, filelock, virtualenv) bumped to patched versions.
+
+### Fixed
+- Docker healthcheck was silently broken: `docker-compose.yml` curled a `/health` route that never existed, and the image never installed `curl` in the first place. Both fixed.
+- rmeta-core's HEIC handler had two live bugs (missing Pillow plugin registration, and an async/sync mismatch that made `scrub()` a silent no-op) — both are in the version this repo now depends on.
+- Numerous AI-generated-content tells cleaned up across docs and source (dead comments, decorative emoji, stale/incorrect THIRD_PARTY.md entries).
+
 ## [0.4.0] - 2025-08-15
 
 ### Added
