@@ -1,8 +1,8 @@
-# 🌐 Ignore version control
+# Ignore version control
 .git
 .gitignore
 
-# 🗑️ Ignore system clutter
+# Ignore system clutter
 __pycache__/
 *.pyc
 *.pyo
@@ -11,7 +11,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# 🧪 Ignore local development/test data
+# Ignore local development/test data
 .env
 *.log
 *.bak
@@ -19,7 +19,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# 📦 Ignore built containers, artifacts, and uploads
+# Ignore built containers, artifacts, and uploads
 *.tar
 *.zip
 *.gz
@@ -27,7 +27,7 @@ Thumbs.db
 dist/
 build/
 
-# 🚫 Ignore any session or upload data (defensive)
+# Ignore any session or upload data (defensive)
 sessions/
 uploads/
 tmp/

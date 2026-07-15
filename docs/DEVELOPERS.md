@@ -1,106 +1,57 @@
-👩‍💻 DEVELOPERS.md
+# Developer notes
 
-Welcome to rMeta — a fast, clean, containerized tool for scrubbing metadata from sensitive files. If you're here, you're either curious, contributing, or critiquing — and you are absolutely welcome.
+Notes for anyone extending or maintaining rMeta.
 
-This document is for developers, tinkerers, privacy nuts, field users, and anyone else who wants to extend or improve the project.
+## Project layout
 
-# 🧠 Project Philosophy
-
-rMeta is built around a few core principles:
-
-- Minimalism: Simple UI, focused functionality, no bloat.
-
-- Modularity: Every handler and postprocessor is self-contained and easily swappable.
-
-- Security-first: No metadata. Optional encryption. Designed for zero-trust environments.
-
-- Accessibility: Clear docs, helpful comments, and low barrier to entry.
-
-We want contributions from all experience levels — not just seasoned devs.
-# 🗂️ Project Layout
-
+```
 .
-├── app.py                     # Main Flask app
+├── app.py                    # Flask app entry point
 ├── handlers/                 # File-type-specific metadata scrubbers
-├── postprocessors/          # Optional extras (GPG, hashing)
-├── static/                  # CSS and JavaScript
-├── templates/               # HTML (currently only index.html)
-├── uploads/                 # Temporary file storage (volume mounted)
-├── .env                     # Configuration (port, feature flags)
-├── Dockerfile               # Container setup
-├── docker-compose.yml       # Runtime orchestration
-└── docs/                    # This file and future developer docs
-
-# 🔌 Adding a New File Handler
-
-1. Create a new .py file in handlers/
-
-2. Define:
-
-```
-supported_extensions = {"ext1", "ext2"}  # lowercase only
-def scrub(file_path):
+├── postprocessors/           # Optional extras: GPG, hashing
+├── static/                   # CSS and JS
+├── templates/                # HTML templates (currently just index.html)
+├── uploads/                  # Temporary file storage (volume mounted)
+├── .env                      # Local configuration (port, feature flags)
+├── Dockerfile
+├── docker-compose.yml
+└── docs/                     # This file and related docs
 ```
 
-The app auto-discovers handlers at runtime.
+## Adding a file handler
 
-# 🧬 Adding a Postprocessor (e.g. Hashing, Encryption)
+1. Create a new `.py` file in `handlers/`, named `<type>_handler.py`.
+2. Define `SUPPORTED_EXTENSIONS = {"ext1", "ext2"}` (lowercase) and a `scrub(file_path)` function.
+3. That's it — `handlers/__init__.py` auto-discovers any `*_handler.py` module and registers it by extension at startup.
 
-1. Create a .py file in postprocessors/
+## Adding a postprocessor
 
-2. Implement a callable (e.g. def generate_hash(...))
+1. Create a `.py` file in `postprocessors/`.
+2. Implement a callable, e.g. `generate_hash(...)`.
+3. Gate it behind a `.env` flag if it should be optional (e.g. `ALLOW_HASH=true`).
+4. Wire the conditional call into `routes/upload.py`.
 
-3. Use .env to toggle options (ALLOW_HASH=true, etc.)
+## Rebuilding the container
 
-4. app.py handles conditional execution
+Changed Python code or added files: `docker-compose up --build`.
 
-# 🛠️ Rebuilding the Container
+Changed only `.html`, `.css`, or `.js`: just refresh the browser, no rebuild needed.
 
-If you make changes to Python code or add new files:
-```
-docker-compose up --build
-```
-If you only change .html, .css, or .js files:
+## Testing
 
-✅ Just refresh the browser — no rebuild needed.
-# 🤝 Contributions
+There's no formal test suite yet. To sanity-check changes:
 
-Pull requests, forks, and ideas are welcome.
+- Run locally with `docker-compose up --build`.
+- Drop files from `dev/generated_dirty_files_for_test/` into the web UI and confirm the output is actually clean.
+- Watch the console for errors or stack traces.
 
-- Add a handler? ✅
+## Ideas for later
 
-- Suggest a privacy feature? ✅
+- Headless mode (for use over SSH or in a TUI)
+- EXIF-only fast-scrub mode
+- PGP decryption support
+- Drag-and-drop for multiple files in one pass
 
-- Tweak the UI or accessibility? ✅
+## License
 
-- Improve docs? Yes please.
-
-# 🧪 Testing
-
-There’s no formal test suite yet, but:
-
-- Run locally with docker-compose up --build
-
-- Drop files into the web UI and confirm output
-
-- Watch console logs for errors or stack traces
-
-# 💡 Future Ideas
-
-- CLI mode (for field/offline usage)
-
-- Headless mode (for use over SSH or TUI)
-
-- EXIF-only fast scrubber mode
-
-- PGP decryption support (optional, advanced)
-
-- Drag-and-drop multiple files
-
-- Onion routing / airgapped workflows
-
-# 🧾 License
-
-This project is MIT licensed.
-
-Thanks for being here. You don’t need permission to start building — you have it.
+MIT.

@@ -11,15 +11,15 @@
 </head>
 <body>
 
-  <!-- 🌗 Theme Toggle Controls -->
+  <!-- Theme toggle -->
   <div class="theme-toggle-wrapper" style="text-align:center; margin-bottom: 1em;">
     <div id="themeLabel" style="font-size: 0.9em; margin-bottom: 4px;">System</div>
-    <button id="themeToggle" title="Toggle theme (Next: Dark)">🖥️</button>
+    <button id="themeToggle" title="Toggle theme (Next: Dark)">Theme</button>
   </div>
 
   <h2>Upload files to remove metadata</h2>
 
-  <!-- 🧼 Upload form -->
+  <!-- Upload form -->
   <form method="post" enctype="multipart/form-data" action="{{ url_for('upload.upload_file') }}" id="upload-form">
     <label for="file-upload" class="drop-zone" id="drop-zone">
       <p>Drag & drop files here or click to select</p>
@@ -37,7 +37,7 @@
     <input type="submit" value="Upload">
   </form>
 
-  <!-- 🧼 Memory Clean Button -->
+  <!-- Memory clean button -->
   <form method="POST" action="{{ url_for('session_clean.clean_memory') }}" id="clean-form">
     <button
       type="submit"
@@ -54,7 +54,7 @@
   </button>
   <pre id="debug-dump" class="hidden">{{ files | tojson(indent=2) }}</pre>
 
-  <!-- 📜 Status messages -->
+  <!-- Status messages -->
   {% if messages %}
     <div class="messages">
       <ul>
@@ -69,7 +69,7 @@
     </div>
   {% endif %}
 
-  <!-- 📊 File Processing Summary -->
+  <!-- File processing summary -->
   {% if files %}
     <h3>File Processing Summary</h3>
       <table>
@@ -100,9 +100,9 @@
             </td>
               <td>
                 {% if file.metadata_msg and "Metadata stripped" in file.metadata_msg %}
-                  ✅ Pass
+                  Pass
                 {% else %}
-                  ❌ Fail
+                  Fail
                 {% endif %}
               </td>
             </tr>
@@ -110,7 +110,7 @@
         </tbody>
       </table>
 
-    <!-- 📥 Download Summary -->
+    <!-- Download summary -->
     <h3>Download Summary</h3>
     <table>
       <thead>
@@ -141,7 +141,7 @@
                 —
               {% endif %}
             </td>
-            <td>{{ "✅" if file.encrypted else "❌" }}</td>
+            <td>{{ "Yes" if file.encrypted else "No" }}</td>
           </tr>
         {% endfor %}
       </tbody>

@@ -119,7 +119,6 @@ def upload_file():
                 is_async = handler_entry.get("is_async", False)
                 msgs_is_async = handler_entry.get("msgs_is_async", False)
 
-                # Step 1: Scrub metadata
                 if scrub_fn:
                     if is_async:
                         asyncio.run(scrub_fn(filepath))
@@ -127,7 +126,6 @@ def upload_file():
                         scrub_fn(filepath)
                     logger.info(f"Scrubbed metadata from: {filename}")
 
-                # Step 2: Get additional messages
                 if get_additional_messages_fn:
                     if msgs_is_async:
                         additional_messages = asyncio.run(get_additional_messages_fn(filepath))
@@ -135,7 +133,6 @@ def upload_file():
                         additional_messages = get_additional_messages_fn(filepath)
                     file_result["warnings"].extend(additional_messages)
 
-                # Step 3: Optional post-processing
                 if request.form.get("generate_hash"):
                     try:
                         hash_filename = generate_hash(filepath)

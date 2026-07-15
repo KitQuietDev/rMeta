@@ -1,61 +1,43 @@
-# rMeta v0.4.0 — Clean Your Files, Keep Your Privacy
+# rMeta
 
-rMeta is a local-only file metadata scrubber that's fast, secure, and doesn't send your data anywhere **EVER**. Whether you're a journalist, lawyer, researcher, or just someone who wants to keep sensitive files clean, rMeta gives you full control over your privacy.
+rMeta strips metadata from files before you share them. It runs entirely on your own machine (or your own container) and never sends anything over the network.
 
-## Overview
+Drop a file in, rMeta scrubs it, you get a clean copy out.
 
-rMeta removes metadata from sensitive files without sending anything over the network. It runs entirely on your machine, inside Docker, and automatically manages its workspace for safety.
+## What it does
 
-You drag a file in, rMeta strips away the noise, and you get a clean version out. No snooping, no nonsense.
+- Removes metadata from JPEG, PDF, DOCX, XLSX, HEIC, TXT, and CSV files
+- Runs locally, inside Docker — no external calls, no telemetry
+- Optional SHA256 hash generation for the cleaned output
+- Optional GPG encryption of the output using your own public key
+- Auto-cleans its temporary workspace on startup, shutdown, new uploads, and on demand from the UI
 
-- Don't have javascript?  Cool - rMeta only uses it for theme switching.  
-- SHA256 hashfile generation
-- Optional GPG public key encryption
-- Temporary workspace auto-cleans
-- **Never** phones home
-- Multiple cleanup methods - deletes previous files on startup, shutdown, when you upload new files, and on-demand with handy button control in the webUI.
+## Supported file types
 
-## Why Should We Care?
+| Type | What happens |
+|------|--------------|
+| JPEG | EXIF and other metadata stripped in place |
+| PDF  | Metadata fields cleaned via `pypdf` |
+| DOCX | Metadata stripped from the underlying XML |
+| XLSX | Metadata tags removed |
+| HEIC | Converted to JPEG, then scrubbed |
+| TXT / CSV | Checked for embedded metadata (rare, but handled) |
 
-This project started when we couldn't find a sole-source piece of kit that could handle multiple filetypes, cost nothing (really), and make us feel comfortable about sharing sensitive files.  We set out to create something:
+Nothing here is a forensic guarantee — see the Privacy Notes below for the honest version.
 
-- **Durable.**  The app's architecture separates concerns, handles validation, and uses ephemeral working directories.
-- **Customizable.**  We don't handle files you want?  Write your own handler!
-- **Fast.** Asynchronous architecture means rMeta handles multiple files simultaneously - even if there are errors.
-- **Smart.** We made sure rMeta does its best to *elegantly* fail while also providing warnings, messages, and logpoints - all accessible by you.
-- **Private.** It will **never** send your data anywhere.  Everything is stored in a temporary workspace.  You have full control.
-- **Secure.** rMeta can generate SHA256 hashfiles AND use your GPG public key to encrypt files at runtime.
+## Getting started
 
-## 🗂️ Supported File Types
+Pick whichever fits how you work. All three run rMeta locally.
 
-- JPEG — In-place metadata scrub
-
-- PDF — Metadata library cleanup
-
-- DOCX — XML-safe stripping
-
-- XLSX — Tag-based metadata removal
-
-- HEIC — Converts to JPEG + scrubs
-
-- TXT / CSV — Minimal metadata check
-
-## Getting Started
-
-Choose the setup that fits your needs. All options run rMeta locally and keep your files private.
-
-### 🟢 Option 1: Quick and Dirty — `docker run`
-
-Fastest way to get started. No setup, no config—just run it:
+**Quickest — just run the published image:**
 
 ```bash
 docker run --rm -d -p 8574:8574 kitquietdev/rmeta:latest
- ```
-_This runs the latest published image on Docker Hub in production mode. No volumes, no persistence._
+```
 
-### 🟡 Option 2: Compose It Right — Using `docker-compose.yml`
+No volumes, no persistence, no config. Good for a quick test.
 
-More structured. Gives you control over config, ports, volumes, environment variables, etc.
+**Docker Compose — if you want config and persistence:**
 
 ```bash
 mkdir rmeta && cd rmeta
@@ -63,11 +45,9 @@ curl -O https://gitlab.com/kitquietdev/rMeta/-/raw/main/docker-compose.yml
 docker compose up -d
 ```
 
-_This uses Gunicorn and production settings. Workspace is managed inside the container._
+Runs under Gunicorn with production settings.
 
-### 🟣 Option 3: Clone + Run — Use the Codebase Directly
-
-If you want the source alongside your container for development, customization, or contributions.
+**From source — for development or customization:**
 
 ```bash
 git clone https://gitlab.com/kitquietdev/rMeta.git
@@ -75,76 +55,60 @@ cd rMeta
 cp docker-compose.yml.example docker-compose.yml
 docker compose up
 ```
-_This runs rMeta in development mode with hot reload and mounted volumes._
 
-*Edit the fresh `docker-compose.yml` as needed for your local dev environment.
+Runs in development mode with hot reload and mounted volumes. Edit the copied `docker-compose.yml` as needed for your setup.
 
-### **Do not expose this setup to the internet.**
-
----
-Prefer a pure command-line workflow?  
-Check out rMetaCLI for privacy-first, batch metadata scrubbing:  [GitLab](https://gitlab.com/KitQuietDev/rmetacli) | [GitHub](https://github.com/KitQuietDev/rMetaCLI)
+**Do not expose the development setup to the internet.** See the security warning below.
 
 ---
-## ⚠️ Security Warning
 
-rMeta is designed to run locally. Development mode (flask run) is not hardened and should never be exposed to the internet.
+Want a pure command-line workflow instead? Check out [rMetaCLI](https://github.com/KitQuietDev/rMetaCLI), the CLI counterpart to this project.
 
-- Dev mode lacks production-grade request handling
+## Security warning
 
-- It does not sanitize headers or enforce TLS
+rMeta's development mode (`flask run`) is not hardened and should not be exposed publicly:
 
-- It is intended for local testing only
+- No production-grade request handling
+- No header sanitization or enforced TLS
+- Intended for local testing only
 
-**If you choose to expose rMeta publicly (e.g., via reverse proxy, tunnel, or port forwarding), you are responsible for securing that setup. Future versions will include proxy-awareness and optional TLS support, but v0.3.0 does not.**
+If you expose rMeta publicly — reverse proxy, tunnel, port forwarding — that's on you to secure. There's no built-in proxy-awareness or TLS support yet.
 
-## Architecture Overview
+## Architecture
 
-- `flask_renderer.py` — Entry point for the app
+- `app.py` / `wsgi.py` — entry points
+- `renderer/flask_renderer.py` — Flask app setup
+- `routes/` — upload, download, and session-cleanup endpoints
+- `handlers/` — one module per file type, auto-discovered at startup
+- `postprocessors/` — optional hashing and GPG encryption
+- `utils/` — cleanup, chunking, memory checks, PII scanning
+- `uploads/` — temporary workspace, wiped automatically
 
-- `handlers/` — File-type-specific logic
+## Privacy notes
 
-- `postprocessors/` — Optional encryption, hashing, etc.
+rMeta does best-effort cleaning with MIT-compatible libraries. It's not a substitute for verification with dedicated tools if you need certainty:
 
-- `uploads/` — Temporary workspace (auto-managed)
+- **JPEG:** standard EXIF removed; adversarial/corrupt files may retain data
+- **PDF:** most metadata fields cleaned; hidden or embedded content may persist
+- **DOCX:** XML metadata stripped; revision history or embedded objects may remain
+- **XLSX:** metadata tags removed; hidden sheets or comments are possible
+- **HEIC:** converted and scrubbed; proprietary tags may linger
+- **TXT/CSV:** no embedded metadata, but filesystem attributes (timestamps, permissions) are untouched
 
-## 🧪 Internal Testing Artifacts
+## Development artifacts
 
-The `dev/` directory contains sample files and scripts used during development. It’s not meant to enforce a test suite — it’s there to illustrate what rMeta was validated against. These assets can help you explore edge cases or understand scrubbing logic in context.
+`dev/` holds sample "dirty" files and a small script used to sanity-check handlers during development. It's not a test suite — just fixtures for manually exercising each handler.
 
-## Simple and Intuitive Workflow
+## License
 
-![rMeta demo](docs/images/rmeta_demo.gif)
-
-_rMeta Workflow Demo_
-
-Simply drag and drop (or browse) files into rMeta, select your options, and press Upload. Download links appear instantly below. You can clear the workspace at anytime with the intelligent Clean Memory button.
-
-
-Real-time feedback, smart messaging, and file-level status reporting – all in one lightweight interface.
-
-## 🐳 Docker Compose Files
-File	Purpose
-- `docker-compose.yml`	Production mode using Gunicorn
-- `docker-compose.yml.example`	Development mode with hot reload and mounted volumes
-
-## 📜 License Compliance
-
-rMeta honors all third-party licenses. See [`THIRD_PARTY.md`](https://gitlab.com/kitquietdev/rmeta/-/blob/main/THIRD_PARTY.md) for full attribution.
+MIT — see [`LICENSE`](LICENSE). Third-party dependencies and their licenses are listed in [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
 ## Contributing
 
-Want to add support for a new file type? Improve the UI? Suggest a feature? We welcome contributions of all kinds. Modular architecture makes it easy to plug in new logic.
+New file-type handler, UI tweak, bug fix — contributions are welcome. See:
 
-We'd love to have you on but we ask you to maintain the ethos and stay consistent with our novice-friendly/expert-aware goals.  To do so, please see
-- [Code of Conduct](https://gitlab.com/kitquietdev/rmeta/-/blob/docs/CODE_OF_CONDUCT.md)
+- [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+- [Contributing guide](docs/CONTRIBUTING.md)
+- [Developer notes](docs/DEVELOPERS.md)
 
-- [Our Contributor's Guide](https://gitlab.com/kitquietdev/rmeta/-/blob/main/docs/CONTRIBUTING.md)
-
-- [Our Documentation Guidelines](https://gitlab.com/kitquietdev/rmeta/-/blob/main/docs/DOCUMENTATION_GUIDELINES.md)
-
-- [Developer's Greeting and Guide](https://gitlab.com/kitquietdev/rmeta/-/blob/main/docs/DEVELOPERS.md)
-
-## Changes and versioning
-
-This README describes the current state of rMeta. For version history and detailed changes, see [`CHANGELOG.md`](https://gitlab.com/kitquietdev/rmeta/-/blob/main/changelog.md).
+For version history, see [`changelog.md`](changelog.md).

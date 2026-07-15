@@ -1,4 +1,4 @@
-# 🧪 Burndown Gauntlet: Test File Generator
+# Burndown Gauntlet: Test File Generator
 
 This directory contains scripts and resources for generating "dirty" test files packed with metadata and PII. These files are used to stress-test rMeta's detection and cleaning capabilities.
 

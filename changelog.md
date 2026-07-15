@@ -1,91 +1,80 @@
 # Changelog
 
-All notable changes to this project will be documented here.  
+All notable changes to this project will be documented here.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.4.0] - 2025-08-15
 
 ### Added
-- Session isolation logic: upload route now purges stale data only when new files are detected.
-- Directory watchdog loop (10s interval) to monitor upload state and trigger UI updates.
+- Session isolation: the upload route now purges stale data only when new files are detected.
+- Directory watchdog (10s interval) that monitors upload state and triggers UI updates.
 - Hostile payload generator (`meta_dirty_bundle`) for synthetic PII testing across supported formats.
 - GitLab CI pipeline for DockerHub and GHCR image publishing.
 
 ### Changed
-- UI button behavior now reflects directory cleanup without requiring user interaction.
-- CI/CD strategy migrated to GitLab; GitHub remains active but no longer trusted for publishing.
-- Improved UI layout: transitioned from a linear list format to organized tables for clearer presentation and easier navigation.
+- UI cleanup button now reflects directory state without requiring user interaction.
+- CI/CD moved to GitLab; GitHub remains active but is no longer used for publishing.
+- UI layout switched from a linear list to tables for clarity.
 
 ### Fixed
-- Read-only file handling in scrubber; metadata removal now proceeds without error.
-- Mixed batch upload handling; consistent working directory maintained across sessions.
+- Read-only file handling in the scrubber; metadata removal no longer errors on read-only inputs.
+- Mixed batch upload handling; working directory now stays consistent across a session.
 
 ## [0.3.2] - 2025-08-11
 
 ### Changed
-- Refactored `safeguards.py` into `system.py` for improved modularity and clarity.
-- Introduced chunking logic to enhance fault tolerance during processing. See `chunking.py` in the `utils/` directory.
+- Refactored `safeguards.py` into `system.py` for clarity.
+- Added chunking logic (`utils/chunking.py`) so large batches degrade gracefully instead of failing outright.
 
 ### Fixed
-- Resolved oversight where `safeguards.py` was not properly wired into execution flow.
+- `safeguards.py` wasn't actually wired into the execution flow — fixed.
 
 ### Docs
-- Updated README to reflect new module structure and usage.
+- Updated README to match the new module structure.
 
 ## [0.3.1] - 2025-08-11
 
 ### Added
-- Rebuilt internal workflow for GitHub Actions.
+- Rebuilt GitHub Actions workflow.
 
 ## [0.3.0] - 2025-08-10
 
-### Breaking
-- **Major refactor:** This release is a near-total rewrite and is **not backward compatible** with previous versions (`0.1.x`, `0.2.x`).
-- **Handler, configuration, and session logic** have all changed; any previous integrations, scripts, or automations will require updates.
-- **PDF handler:** Now uses a new library for full MIT license compatibility.
-- **Async/await integration:** All core logic now uses `asyncio` for improved performance and maintainability.
-- **Production server:** Switched from Flask’s built-in server to Gunicorn for non-development deployments.
-- **Docker Compose:** Configuration and environment variables have changed; see updated `docker-compose.yml` and `.env` for details.
+Near-total rewrite. **Not backward compatible** with `0.1.x` or `0.2.x` — handler, configuration, and session logic all changed.
 
 ### Added
-- **Regex-based PII detection:** New `utils/pii_scanner.py` for scanning text for emails, SSNs, phone numbers, and more.
-- **PII scanning in all major handlers:** Now integrated into `pdf_handler.py`, `docx_handler.py`, `xlsx_handler.py`, and `text_csv_handler.py`.
-- **Flash messages:** UI now reports detected PII types after scrubbing, across all supported filetypes.
-- **Session tracking:** Smart session tracking in `utils/cleanup.py` prevents deletion of active sessions.
-- **Cleanup logic:** Integrated into `upload.py`, `download.py`, and `flask_renderer.py` for robust ephemeral file handling.
-- **Development Docker Compose:** Added `docker-compose.yml.example` for local development and hot-reload support.
+- `utils/pii_scanner.py` — regex-based detection for emails, SSNs, phone numbers, and more.
+- PII scanning wired into `pdf_handler.py`, `docx_handler.py`, `xlsx_handler.py`, and `text_csv_handler.py`.
+- UI now reports detected PII types after scrubbing.
+- Session tracking in `utils/cleanup.py` to avoid deleting active sessions.
+- `docker-compose.yml.example` for local development with hot reload.
 
 ### Changed
-- **Async execution:** Standardized use of `asyncio.to_thread()` for async-safe file and handler operations.
-- **Logging:** Improved consistency and clarity of logging across all modules.
-- **Docker Compose:** Restructured for production best practices and easier local development.
-- **Loose ends:** Numerous bug fixes, code cleanups, and documentation improvements throughout the codebase.
-
----
-
-*For migration instructions and more details, see the updated documentation and example configs.*
+- PDF handler switched to a library with full MIT license compatibility.
+- Core logic moved to `asyncio` throughout, standardized on `asyncio.to_thread()` for file and handler operations.
+- Production serving switched from Flask's dev server to Gunicorn.
+- `docker-compose.yml` restructured for production use; `.env` variables changed accordingly.
+- Cleanup logic integrated into `upload.py`, `download.py`, and `flask_renderer.py`.
 
 ## [0.2.1] - 2025-07-28
 
 ### Added
-- Installation experience improved — better onboarding for first-time users.
-- Expanded log clarity during GPG encryption steps.
-- Enhanced error messages for file validation and failure points.
+- Smoother first-run onboarding.
+- Clearer logging during GPG encryption.
+- Better error messages for file validation failures.
 
 ### Changed
-- Reworked postprocessor naming for clarity.
-- Minor internal doc cleanup and README flow diagram.
+- Renamed postprocessors for clarity.
+- Minor doc cleanup and README flow diagram.
 
 ## [0.2.0] - 2025-07-26
 
-### Major Updates
-- Rewrote core logic with async handling.
-- Improved validation and error messaging across all handlers.
+- Rewrote core logic around async handling.
+- Improved validation and error messages across all handlers.
 - Added GPG encryption support.
 - New Docker packaging and GHCR integration.
 
 ## [0.1.5] - 2025-07-22
 
-### Initial Public Release
+### Initial public release
 - Basic metadata scrubbing.
 - HEIC handler and rudimentary postprocessing.

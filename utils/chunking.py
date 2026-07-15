@@ -6,10 +6,9 @@ from .system import get_available_memory_mb
 logger = logging.getLogger(__name__)
 
 def is_supported_file(file_path):
-    """
-    Dummy check for supported file types.
-    Replace with your actual logic.
-    """
+    """Cheap extension check used before a file enters the audit/chunk pipeline.
+    Kept in sync with the extensions handlers/__init__.py registers; not a
+    replacement for get_handler_for_extension()."""
     supported_extensions = {".pdf", ".jpg", ".jpeg", ".png", ".txt", ".csv", ".docx", ".xlsx"}
     return Path(file_path).suffix.lower() in supported_extensions
 
@@ -78,8 +77,7 @@ def process_chunks(chunks, min_memory_mb, processor=None):
             if processor:
                 processor(chunk)
             else:
-                logger.info(f"Processing chunk: {[os.path.basename(f) for f in chunk]}")
-                # Replace with your actual processing logic
+                logger.info(f"No processor given, skipping chunk: {[os.path.basename(f) for f in chunk]}")
         except Exception as e:
             logger.error(f"Error processing chunk: {e}")
 
