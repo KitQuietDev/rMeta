@@ -32,7 +32,7 @@ Pick whichever fits how you work. All three run rMeta locally.
 **Quickest — just run the published image:**
 
 ```bash
-docker run --rm -d -p 8574:8574 kitquietdev/rmeta:latest
+docker run --rm -d -p 8574:8574 ghcr.io/kitquietdev/rmeta:latest
 ```
 
 No volumes, no persistence, no config. Good for a quick test.
@@ -41,7 +41,7 @@ No volumes, no persistence, no config. Good for a quick test.
 
 ```bash
 mkdir rmeta && cd rmeta
-curl -O https://gitlab.com/kitquietdev/rMeta/-/raw/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/KitQuietDev/rMeta/main/docker-compose.yml
 docker compose up -d
 ```
 
@@ -50,7 +50,7 @@ Runs under Gunicorn with production settings.
 **From source — for development or customization:**
 
 ```bash
-git clone https://gitlab.com/kitquietdev/rMeta.git
+git clone https://github.com/KitQuietDev/rMeta.git
 cd rMeta
 cp docker-compose.yml.example docker-compose.yml
 docker compose up

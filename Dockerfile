@@ -14,5 +14,3 @@ COPY . .
 
 EXPOSE 8574
 CMD ["python3", "-u", "app.py"]
-
-RUN rm -f /tmp/rmeta_session.lock
